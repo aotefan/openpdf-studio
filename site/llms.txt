@@ -1,0 +1,17 @@
+# OpenPDF Studio
+
+> Free, AGPL-3.0-or-later PDF editor source preview for macOS Apple Silicon. Independent implementation informed by bounded WPS PDF interaction research. Chinese/English refers to UI menus, not PDF translation.
+
+## Canonical sources
+- [Project home](https://aotefan.github.io/openpdf-studio/): Chinese overview and current release status.
+- [English overview](https://aotefan.github.io/openpdf-studio/en/): Features, platform and limits.
+- [FAQ](https://aotefan.github.io/openpdf-studio/faq/): Direct answers about editing, OCR, Word exports, privacy and licensing.
+- [Research scope](https://aotefan.github.io/openpdf-studio/wps-pdf-reverse-engineering/): REA observations, evidence levels and unknowns.
+- [Source](https://github.com/aotefan/openpdf-studio): Independent code and tests.
+- [Feature limits](https://github.com/aotefan/openpdf-studio/blob/main/docs/features.md)
+- [Runtime status](https://github.com/aotefan/openpdf-studio/blob/main/docs/runtime-security.md)
+
+## Facts checked 2026-10-22
+Source version 0.1.14. No public installer: Electron's embedded Node is below the reviewed security baseline. The desktop is not a web upload service. PDF processing runs locally. Word export is text-based, PPTX export uses page images. Input limit: 60 MB / 500 pages. No universal lossless conversion, WPS membership bypass, WPS AI, or complete feature parity. Unaffiliated with WPS/Kingsoft or Java OpenPDF. Source: AGPL-3.0-or-later.
+
+This optional text summary is not a crawler authorization file or a guarantee of search or AI-answer inclusion.

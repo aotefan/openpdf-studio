@@ -1,0 +1,62 @@
+{
+  "name": "openpdf-studio",
+  "version": "0.1.14",
+  "private": true,
+  "type": "module",
+  "main": "desktop/main.cjs",
+  "description": "免费开源 PDF 编辑器 | WPS PDF 交互逆向研究与独立实现 | macOS 本地编辑、OCR、PDF 转 Word",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc -b && vite build",
+    "start": "electron .",
+    "test:ui": "playwright test",
+    "package": "node scripts/package.mjs",
+    "test:engine": ".venv/bin/python -m pytest tests/test_engine.py tests/test_integrity.py tests/test_inline.py -q tests/test_image_geometry.py tests/test_pages.py tests/test_ocr_batch.py tests/test_markups.py tests/test_text_placement.py",
+    "test:desktop": "node --test tests/test_batch_conversion.cjs",
+    "prestart": "node scripts/check-runtime.cjs --electron",
+    "prepackage": "node scripts/check-runtime.cjs --electron",
+    "check:runtime": "node scripts/check-runtime.cjs",
+    "check:site": "python3 scripts/check-site.py"
+  },
+  "dependencies": {
+    "i18next": "^25.6.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-i18next": "^16.2.0"
+  },
+  "devDependencies": {
+    "@electron/packager": "^20.3.0",
+    "@playwright/test": "^1.56.1",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "electron": "44.9.3",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.12"
+  },
+  "license": "AGPL-3.0-or-later",
+  "author": "OpenPDF Studio contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aotefan/openpdf-studio.git"
+  },
+  "homepage": "https://aotefan.github.io/openpdf-studio/",
+  "bugs": {
+    "url": "https://github.com/aotefan/openpdf-studio/issues"
+  },
+  "keywords": [
+    "pdf-editor",
+    "free-pdf-editor",
+    "wps-pdf",
+    "reverse-engineering",
+    "rea",
+    "ocr",
+    "pdf-to-word",
+    "macos",
+    "chinese"
+  ],
+  "engines": {
+    "node": ">=24.22.1 <25 || >=26.12.1 <27"
+  }
+}

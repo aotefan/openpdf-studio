@@ -1,0 +1,28 @@
+node_modules/
+.venv/
+build/
+dist/
+release/
+__pycache__/
+.pytest_cache/
+*.tsbuildinfo
+# Generated test evidence and browser profiles remain local / in the QA system.
+tests/results/*
+!tests/results/.gitkeep
+test-results/
+playwright-report/
+# Read-only third-party research inputs are not independent product source.
+research/tools/
+research/targets/
+research/evidence/
+.DS_Store
+*.pyc
+.env
+.env.*
+!.env.example
+
+.verification/
+.private/
+.secrets/
+*.key
+*.pem

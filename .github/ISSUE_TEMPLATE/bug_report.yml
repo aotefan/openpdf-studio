@@ -1,0 +1,24 @@
+name: Bug report / 问题反馈
+description: Report a reproducible PDF or interface problem.
+body:
+  - type: markdown
+    attributes:
+      value: 请勿上传个人 PDF、密钥或 WPS 专有资源。Use synthetic or redacted examples only.
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit and macOS / CPU
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps / 复现步骤
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected and actual result / 期望与实际结果
+    validations:
+      required: true

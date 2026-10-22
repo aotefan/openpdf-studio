@@ -1,0 +1,21 @@
+# Feature status — OpenPDF Studio 0.1.14 (source release)
+
+This is a research prototype. The public source release is based on the locally tested 0.1.13 implementation; desktop execution is gated on the current Electron/Node security check (see runtime-security.md).
+
+|Area|Implemented|Limits / remaining work|
+|---|---|---|
+|Interface|Chinese/English menus, tooltips, dialogs, inspector, errors; instant persisted switch; independent branding|Chinese visual baseline prioritized; not every WPS menu reproduced|
+|Reading|Open PDFs, tabs, raster pages, thumbnails, bookmarks navigation, pointer-anchored trackpad pinch zoom (25%–400%), search, page navigation|Raster viewer, no native text-selection reading layer; no form filling|
+|Text|Click horizontal text on the page to type with automatic rightward box growth into free space, replace/delete, add text, size/color, Latin bold/italic, underline; simple original-stream editing; CJK font fallback|On-page draft uses a browser font approximation; engine preview is authoritative. Growth stops at page edges or detected new collisions with text/images/vertical table rules. No universal paragraph reflow, multiline edit, arbitrary embedded-font patching, hidden OCR correction|
+|Images|Select, insert, replace, delete, rotate, opacity, on-page drag/resize with 8 handles, central crop|Direct movement/resizing preserves stacking for isolated unrotated image streams. Shared/nested/clipped/complex placements fail closed; live drag sprite is provisional until engine render|
+|Pages|Rotate, add/delete, move earlier/later, merge, extract current page or selected page ranges, direct multi-page rotation/deletion and drag reorder with thumbnail selection, split all to ZIP, page box resize|Range extraction retains document order; page order is staged visually and applied once; extraction requires applying or resetting the staged order|
+|Annotations|Keyword highlight, underline and strikeout; page ranges, color/opacity, duplicate skipping, one-step apply after match summary, optional visual preview, manage/remove own markups, history and saved persistence|No pointer text selection/freehand/comments UI; scans need OCR; case-insensitive ASCII substring search; 2,000-region limit. Strikeout does not redact text|
+|Decorations|All-page page numbers, watermark, header/footer|Existing watermark semantic identification/edit not implemented|
+|History/save|Internal revision-checked commit for inline text/image gestures; internal validation for direct page/image actions; optional previews for parameter dialogs; review for OCR/text replacement; undo/redo; save copy; last active document recovery|Full rewrite, not incremental; last document only; bounded in-memory history|
+|OCR|Apple Vision local Chinese/English searchable text layers; page-range batches, preflight skip reasons, per-page progress, cancellation, excerpts and atomic preview|Skips pages with any existing text (including mixed pages), rotation, or no image/vector content. No deskew/layout model/scan image text replacement; errors require human review; cancellation waits for current native page (120-second timeout)|
+|Conversion|PNG ZIP, TXT, DOCX text, XLSX detected tables/text, PPTX page images; image/DOCX text-table import|No general lossless Office conversion; LibreOffice/pdf2docx adapters pending|
+|Batch|Current-document text replace, all-page page numbers/watermark/split; atomic candidate rollback; multi-PDF conversion from disk|Multi-file conversion queue for DOCX/XLSX/PPTX/PNG ZIP/TXT with cancel and transactional output directory; multi-file OCR and batch image replacement pending|
+|AI|Excluded from visible product at user's request|No WPS AI or cloud services. Experimental deterministic parser remains engine-only, not advertised as AI|
+|Distribution|Apple Silicon local .app bundle with Python worker and Vision helper|Not notarized or App Store-ready; release packaging checked separately|
+
+Limits: 60 MB input, 500 pages, 12 sessions, up to 15 undo snapshots / approx 128 MB undo bytes. Preview renders all pages and may be slow on large PDFs. Encrypted, modification-restricted and signed PDFs are rejected. Arbitrary PDF page content complexity can exceed practical memory/time limits. No malware sandbox certification.

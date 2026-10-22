@@ -1,0 +1,54 @@
+import {test,expect,_electron as electron} from '@playwright/test';
+import path from 'node:path';import fs from 'node:fs/promises';
+for(const locale of ['zh-CN','en-US'])test(`${locale}: manage page ranges, extract, rotate, delete and undo`,async()=>{
+ const root=path.resolve('.'),zh=locale==='zh-CN';const app=await electron.launch({args:[root,'--user-data-dir='+path.join(root,'tests/results/profile-pages-'+locale+'-'+Date.now())]});
+ const errors:string[]=[];
+ try{
+  const page=await app.firstWindow();page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});await expect(page).toHaveTitle('OpenPDF Studio');
+  await page.waitForSelector('.empty');await page.evaluate(l=>localStorage.setItem('language',l),locale);await page.reload();
+  await app.evaluate(({dialog},file)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[file]})},path.join(root,'test-fixtures/research.pdf'));
+  await page.locator('.empty').getByRole('button',{name:zh?'打开 PDF':'Open PDF',exact:true}).click();await expect(page.locator('.paper>img')).toBeVisible();
+  await page.locator('.ribbon-tabs').getByRole('button',{name:zh?'页面':'Page',exact:true}).click();
+  const openManager=async(count=3)=>{await page.getByRole('button',{name:zh?'页面管理':'Manage pages',exact:true}).click();await expect(page.locator('.managed-page')).toHaveCount(count)};
+  const dialog=page.locator('dialog'),range=page.getByLabel(zh?'页码范围':'Page range',{exact:true});
+  const selected=page.locator('.managed-page[aria-pressed=true]');
+  const remove=dialog.getByRole('button',{name:zh?'删除所选页面':'Delete selected pages',exact:true});
+  const extract=dialog.getByRole('button',{name:zh?'提取为 PDF':'Extract to PDF',exact:true});
+  const cw=dialog.getByRole('button',{name:zh?'顺时针旋转':'Rotate clockwise',exact:true});
+  const close=()=>dialog.getByRole('button',{name:zh?'关闭':'Close',exact:true}).click();
+  const undo=()=>page.getByRole('button',{name:zh?'撤销':'Undo',exact:true}).click();
+  const redo=()=>page.getByRole('button',{name:zh?'重做':'Redo',exact:true}).click();
+  const readSaved=async(file:string)=>{const data=await fs.readFile(file,'base64');return page.evaluate(async data=>{const d=await window.studio.rpc('open',{data,name:'reopened.pdf'});const texts=[];for(let p=0;p<d.pages.length;p++){const o=await window.studio.rpc('objects',{sid:d.id,page:p});texts.push(o.texts.map((x:any)=>x.text).join('\n'))}await window.studio.rpc('close',{sid:d.id});return {pages:d.pages,texts}},data)};
+  const setSave=async(name:string)=>{const file=path.join(root,`tests/results/pages-${locale}-${name}.pdf`);await fs.rm(file,{force:true});await app.evaluate(({dialog},file)=>{dialog.showSaveDialog=async()=>({canceled:false,filePath:file})},file);return file};
+  await openManager();await expect(selected).toHaveCount(1);
+  await page.locator('.managed-page').nth(1).click();await page.locator('.managed-page').nth(2).click({modifiers:['Shift']});await expect(selected).toHaveCount(3);await expect(remove).toBeDisabled();
+  await dialog.getByRole('button',{name:zh?'反选':'Invert selection',exact:true}).click();await expect(selected).toHaveCount(0);await expect(extract).toBeDisabled();
+  await dialog.getByRole('button',{name:zh?'全选':'Select All',exact:true}).click();await expect(selected).toHaveCount(3);
+  await dialog.getByRole('button',{name:zh?'清空选择':'Clear selection',exact:true}).click();await expect(selected).toHaveCount(0);
+  await range.fill('3, 1, 1-2');await expect(selected).toHaveCount(3);
+  for(const invalid of ['2-1','0','4','1,,3','1.5']){await range.fill(invalid);await expect(range).toHaveAttribute('aria-invalid','true');await expect(extract).toBeDisabled();await expect(dialog.getByRole('alert')).toBeVisible()}
+  await range.fill('1，3');await expect(selected).toHaveCount(2);await expect(dialog.getByRole('alert')).toHaveCount(0);
+  await expect(page.locator('.managed-page img')).toHaveCount(3);
+  await expect(page.locator('vite-error-overlay')).toHaveCount(0);await page.screenshot({path:`tests/results/page-manager-${locale}.png`});
+  await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows()[0].setContentSize(980,640));
+  await expect.poll(()=>dialog.evaluate(e=>e.scrollWidth<=e.clientWidth)).toBe(true);
+  const b=(await extract.boundingBox())!;expect(b.y+b.height).toBeLessThanOrEqual(640);
+  await page.screenshot({path:`tests/results/page-manager-narrow-${locale}.png`});
+  await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows()[0].setContentSize(1496,855));
+  await app.evaluate(({dialog})=>{dialog.showSaveDialog=async()=>({canceled:true,filePath:undefined})});await extract.click();await expect(extract).toBeEnabled();await expect(selected).toHaveCount(2);await expect(page.locator('.page-export-success')).toHaveCount(0);
+  const extracted=await setSave('extracted');await extract.click();await expect(page.locator('.page-export-success')).toBeVisible();
+  const ex=await readSaved(extracted);expect(ex.pages).toHaveLength(2);expect(ex.texts[0]).toContain('Page 1:');expect(ex.texts[1]).toContain('Page 3:');await expect(page.locator('.thumb')).toHaveCount(3);
+  await close();await expect(page.locator('.thumb')).toHaveCount(3);
+  await openManager();await range.fill('1,3');await cw.click();await expect(page.locator('.comparison')).toHaveCount(0);await expect(dialog).toHaveCount(0);await expect(dialog).toHaveCount(0);
+  const rotated=await setSave('rotated');await page.locator('.quick-actions').getByRole('button',{name:zh?'另存副本':'Save a copy',exact:true}).click();await expect.poll(async()=>!!(await fs.stat(rotated).catch(()=>null))).toBe(true);
+  expect((await readSaved(rotated)).pages.map((p:any)=>p.rotation)).toEqual([90,0,90]);
+  await undo();await expect(page.getByRole('button',{name:zh?'重做':'Redo',exact:true})).toBeEnabled();await redo();await undo();
+  await openManager();await range.fill('1,3');await dialog.getByRole('button',{name:zh?'逆时针旋转':'Rotate counterclockwise',exact:true}).click();await expect(page.locator('.comparison')).toHaveCount(0);await expect(dialog).toHaveCount(0);await undo();
+  await openManager();await range.fill('1,3');await remove.click();await expect(page.locator('.comparison')).toHaveCount(0);await expect(dialog).toHaveCount(0);await expect(page.locator('.thumb')).toHaveCount(1);
+  const deleted=await setSave('deleted');await page.locator('.quick-actions').getByRole('button',{name:zh?'另存副本':'Save a copy',exact:true}).click();await expect.poll(async()=>!!(await fs.stat(deleted).catch(()=>null))).toBe(true);
+  const remaining=await readSaved(deleted);expect(remaining.pages).toHaveLength(1);expect(remaining.texts[0]).toContain('Page 2:');
+  await undo();await expect(page.locator('.thumb')).toHaveCount(3);await redo();await expect(page.locator('.thumb')).toHaveCount(1);
+  await openManager(1);await expect(remove).toBeDisabled();await close();
+  expect(errors).toEqual([]);
+ }finally{await app.close()}
+});
