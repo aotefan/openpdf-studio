@@ -77,7 +77,6 @@ def test_shared_image_rejected(engine):
  with pytest.raises(EngineError,match='sharedImage'):engine.preview(doc['id'],[{'type':'deleteImage','xref':o['xref']}])
 def test_ocr(engine):
  original=f.open('test-fixtures/research.pdf');d=f.open();p=d.new_page();p.insert_image(p.rect,stream=original[0].get_pixmap(matrix=f.Matrix(2,2)).tobytes('png'))
- Path('test-fixtures/scan.pdf').write_bytes(d.tobytes())
  doc=engine.open(b64(d.tobytes()),'scan.pdf');assert engine.objects(doc['id'])['kind']=='scan'
  p=engine.preview(doc['id'],[{'type':'ocr'}]);assert p['diff']==[]
  engine.commit(doc['id'],p['token']);assert 'OpenPDF' in text(engine,doc)

@@ -1,12 +1,22 @@
-import sys,json,traceback
+import sys,json,traceback,contextlib
+# Windows pipe defaults depend on the user's code page; the RPC wire is UTF-8.
+for stream in (sys.stdin,sys.stdout,sys.stderr):
+    if hasattr(stream,'reconfigure'):stream.reconfigure(encoding='utf-8')
+if len(sys.argv)==3 and sys.argv[1]=='--ocr':
+    from rapid_ocr import main
+    main(sys.argv[2])
+    raise SystemExit(0)
 from core import Engine,EngineError
 engine=Engine()
 allowed={'open','info','close','render','objects','text_backdrop','text_layout','ocr_plan','ocr_begin','ocr_step','ocr_finish','ocr_cancel','image_layer','search','preview','commit','history','plan','replace_plan','conversion_info','markup_plan','markups','export','import_file'}
 for line in sys.stdin:
+    request={}
     try:
         request=json.loads(line)
         if request['method'] not in allowed:raise EngineError('invalidOperation')
-        result=getattr(engine,request['method'])(**request.get('params',{}))
+        # Libraries may print diagnostics (e.g. table detection). stdout is RPC only.
+        with contextlib.redirect_stdout(sys.stderr):
+            result=getattr(engine,request['method'])(**request.get('params',{}))
         response={'id':request['id'],'result':result}
     except EngineError as e:response={'id':request.get('id'),'error':{'code':e.code,'details':e.details}}
     except Exception:

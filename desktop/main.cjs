@@ -1,28 +1,25 @@
 const {app,BrowserWindow,ipcMain,dialog,Menu,shell}=require('electron');
-const {spawn}=require('node:child_process');
 const fs=require('node:fs/promises');
 const path=require('node:path');
-const readline=require('node:readline');
+const {workerLaunch,isAppNavigation}=require('./platform.cjs');
+const {WorkerClient}=require('./worker-client.cjs');
 const {BatchConversion}=require('./batch-conversion.cjs');
 const batch=new BatchConversion((method,params)=>call(method,params));
-let worker,win,seq=0,localeRequest=0;const pending=new Map();
+let worker,win,localeRequest=0;
 const root=path.resolve(__dirname,'..');
 const allowed=new Set(['open','info','close','render','objects','text_backdrop','text_layout','ocr_plan','ocr_begin','ocr_step','ocr_finish','ocr_cancel','image_layer','search','preview','commit','history','plan','replace_plan','conversion_info','markup_plan','markups','export','import_file']);
-function call(method,params={}){return new Promise((resolve,reject)=>{if(!allowed.has(method))return reject(new Error('invalidOperation'));const id=++seq;pending.set(id,{resolve,reject});worker.stdin.write(JSON.stringify({id,method,params})+'\n');});}
+function call(method,params={}){if(!allowed.has(method))return Promise.reject(new Error('invalidOperation'));return worker.call(method,params);}
 function startWorker(){
- const packaged=app.isPackaged;const command=packaged?path.join(process.resourcesPath,'engine','openpdf-engine'):path.join(root,'.venv/bin/python');
- worker=spawn(command,packaged?[]:[path.join(root,'engine/worker.py')],{env:{...process.env,OPENPDF_OCR:packaged?path.join(process.resourcesPath,'vision-ocr'):path.join(root,'build/vision-ocr')},stdio:['pipe','pipe','pipe']});
- readline.createInterface({input:worker.stdout}).on('line',line=>{try{const r=JSON.parse(line);const p=pending.get(r.id);if(p){pending.delete(r.id);r.error?p.reject(new Error(r.error.code)):p.resolve(r.result);}}catch(e){console.error(e.message);}});
- worker.stderr.on('data',b=>console.error(b.toString()));
- const fail=()=>{for(const p of pending.values())p.reject(new Error('engineStopped'));pending.clear();};worker.on('exit',fail);worker.on('error',fail);
+ worker=new WorkerClient(workerLaunch({root,resources:process.resourcesPath,packaged:app.isPackaged}));
 }
 app.whenReady().then(()=>{
+ app.setAppUserModelId('studio.openpdf.desktop');
  startWorker();
  win=new BrowserWindow({width:1496,height:855,minWidth:980,minHeight:640,title:'OpenPDF Studio',backgroundColor:'#eceef1',webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
  // PDF zoom belongs to the viewer, never magnify the menus and sidebars.
  win.webContents.setVisualZoomLevelLimits(1,1);
  win.webContents.setWindowOpenHandler(()=>({action:'deny'}));
- win.webContents.on('will-navigate',(event,url)=>{if(!url.startsWith('file://'+path.join(root,'dist')))event.preventDefault();});
+ win.webContents.on('will-navigate',(event,url)=>{if(!isAppNavigation(url,path.join(root,'dist/index.html')))event.preventDefault();});
  ipcMain.handle('rpc',(_e,method,params)=>call(method,params));
  ipcMain.handle('batch-conversion',async(_event,action,value)=>{
   if(action==='reset')return batch.reset();
@@ -52,10 +49,11 @@ app.whenReady().then(()=>{
   const labels=JSON.parse(await fs.readFile(path.join(base,'src/i18n',lng+'.json'),'utf8'));
   if(request!==localeRequest)return;
   const item=(key,command,accelerator)=>({label:labels[key],accelerator,click:()=>win.webContents.send('menu-command',command)});
+  const mac=process.platform==='darwin';
   Menu.setApplicationMenu(Menu.buildFromTemplate([
-   {label:labels.appName,submenu:[item('settings','settings','CmdOrCtrl+,'),{type:'separator'},{label:labels.hide,role:'hide'},{label:labels.quit,role:'quit'}]},
-   {label:labels.fileMenu,submenu:[item('open','open','CmdOrCtrl+O'),item('save','save','CmdOrCtrl+S')]},
-   {label:labels.editMenu,submenu:[item('undo','undo','CmdOrCtrl+Z'),item('redo','redo','CmdOrCtrl+Shift+Z'),{type:'separator'},...['cut','copy','paste','selectAll'].map(role=>({label:labels[role],role})),item('search','search','CmdOrCtrl+F')]},
+   ...(mac?[{label:labels.appName,submenu:[item('settings','settings','CmdOrCtrl+,'),{type:'separator'},{label:labels.hide,role:'hide'},{label:labels.quit,role:'quit'}]}]:[]),
+   {label:labels.fileMenu,submenu:[item('open','open','CmdOrCtrl+O'),item('save','save','CmdOrCtrl+S'),...(!mac?[{type:'separator'},item('settings','settings','Ctrl+,'),{label:labels.quit,role:'quit'}]:[])]},
+   {label:labels.editMenu,submenu:[item('undo','undo','CmdOrCtrl+Z'),item('redo','redo',mac?'Command+Shift+Z':'Ctrl+Y'),{type:'separator'},...['cut','copy','paste','selectAll'].map(role=>({label:labels[role],role})),item('search','search','CmdOrCtrl+F')]},
    {label:labels.viewMenu,submenu:[item('fit','fit'),{label:labels.fullscreen,role:'togglefullscreen'}]},
    {label:labels.windowMenu,submenu:[{label:labels.minimize,role:'minimize'},{label:labels.zoomWindow,role:'zoom'}]},
    {label:labels.help,submenu:[item('help','help')]}

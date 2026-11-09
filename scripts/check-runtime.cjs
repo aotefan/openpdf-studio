@@ -1,7 +1,8 @@
-// Minimum patched versions from the 2026-10-21 Node security advisory.
+// Reviewed 2026-11-09 against official Node / Electron release metadata.
 // Recheck official advisories before each release; this is not a timeless safety claim.
 const https = require('node:https');
-const floors = {22:[22,23,4],24:[24,22,1],26:[26,12,1]};
+const {execFileSync} = require('node:child_process');
+const floors = {24:[24,22,2],26:[26,13,0]};
 function patched(value) {
  const v=value.replace(/^v/,'').split('.').map(Number), min=floors[v[0]];
  if(!min || v.length!==3 || v.some(x=>!Number.isInteger(x)))return false;
@@ -21,6 +22,13 @@ async function main(){
   if(!found)throw new Error(`Cannot verify Electron ${version} from official release metadata.`);
   console.log(`Electron ${version} embeds Node ${found.node}`);
   if(!patched(found.node))throw new Error('Desktop launch/package blocked: embedded Node lacks the reviewed patch version. Update Electron after upstream fixes are available; see docs/runtime-security.md.');
+  if(process.argv.includes('--installed')){
+   const installed=require('electron/package.json').version;
+   if(installed!==version)throw new Error(`Installed Electron ${installed} does not match pin ${version}. Run npm ci.`);
+   const actual=JSON.parse(execFileSync(require('electron'),['-p','JSON.stringify(process.versions)'],{encoding:'utf8',env:{...process.env,ELECTRON_RUN_AS_NODE:'1'},timeout:20000,windowsHide:true}));
+   console.log(`Installed Electron: ${actual.electron}; embedded Node: ${actual.node}; Chromium: ${actual.chrome}`);
+   if(actual.electron!==version||!patched(actual.node))throw new Error('Installed Electron runtime did not pass verification.');
+  }
  }
 }
 module.exports={patched};

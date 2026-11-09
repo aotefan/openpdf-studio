@@ -1,0 +1,56 @@
+name: Windows x64 preview
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    env:
+      PYTHONUTF8: '1'
+      PYTHONIOENCODING: utf-8
+      OPENPDF_OCR_BACKEND: rapidocr
+      OPENPDF_EVIDENCE: tests/results/windows-evidence
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: '3.12.14'
+          python-arch: x86_64
+          enable-cache: true
+          cache-dependency-glob: requirements-windows.lock
+      - name: Install native Windows dependencies
+        run: |
+          uv python install 3.12.14
+          uv venv --python 3.12.14 .venv
+          uv pip install --python .venv\Scripts\python.exe -r requirements-windows.lock
+          .venv\Scripts\python.exe -c "import sys,struct; print(sys.version); assert sys.version_info[:3] == (3,12,14); assert struct.calcsize('P') == 8"
+          npm ci --ignore-scripts
+          node scripts/check-runtime.cjs --electron
+          node node_modules/electron/install.js
+          npm run check:runtime -- --electron --installed
+      - run: npm run build
+      - run: npm run test:desktop
+      - run: npm run test:engine
+      - run: npm run test:ui
+      - run: npm run package:win
+      - name: Test relocated portable app, bundled worker and offline OCR
+        run: npm run test:packaged
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: OpenPDF-Studio-windows-x64
+          path: release/artifacts.noindex/*/OpenPDF-Studio-*-windows-x64.zip
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: windows-test-evidence
+          path: tests/results

@@ -1,22 +1,25 @@
 {
   "name": "openpdf-studio",
-  "version": "0.1.14",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "main": "desktop/main.cjs",
-  "description": "免费开源 PDF 编辑器 | WPS PDF 交互逆向研究与独立实现 | macOS 本地编辑、OCR、PDF 转 Word",
+  "description": "免费开源 PDF 编辑器 | Windows / macOS 本地编辑、离线 OCR、PDF 转 Word",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "tsc -b && vite build",
     "start": "electron .",
     "test:ui": "playwright test",
     "package": "node scripts/package.mjs",
-    "test:engine": ".venv/bin/python -m pytest tests/test_engine.py tests/test_integrity.py tests/test_inline.py -q tests/test_image_geometry.py tests/test_pages.py tests/test_ocr_batch.py tests/test_markups.py tests/test_text_placement.py",
-    "test:desktop": "node --test tests/test_batch_conversion.cjs",
-    "prestart": "node scripts/check-runtime.cjs --electron",
-    "prepackage": "node scripts/check-runtime.cjs --electron",
+    "test:engine": "node scripts/python.cjs -m pytest tests -q",
+    "test:desktop": "node --test tests/test_*.cjs",
+    "prestart": "node scripts/check-runtime.cjs --electron --installed",
     "check:runtime": "node scripts/check-runtime.cjs",
-    "check:site": "python3 scripts/check-site.py"
+    "check:site": "node scripts/python.cjs scripts/check-site.py",
+    "pretest:ui": "node scripts/check-runtime.cjs --electron --installed",
+    "package:win": "node scripts/package.mjs --platform=win32",
+    "build:native": "node scripts/python.cjs scripts/build-native.py",
+    "test:packaged": "node scripts/test-portable.mjs"
   },
   "dependencies": {
     "i18next": "^25.6.0",
@@ -31,7 +34,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.4",
-    "electron": "44.9.3",
+    "electron": "45.2.3",
     "typescript": "^5.9.3",
     "vite": "^7.1.12"
   },
@@ -54,9 +57,14 @@
     "ocr",
     "pdf-to-word",
     "macos",
-    "chinese"
+    "chinese",
+    "windows"
   ],
   "engines": {
-    "node": ">=24.22.1 <25 || >=26.12.1 <27"
+    "node": ">=24.22.2 <25 || >=26.13.0 <27"
+  },
+  "overrides": {
+    "glob": "^14.0.4",
+    "minimatch": "^11.0.5"
   }
 }

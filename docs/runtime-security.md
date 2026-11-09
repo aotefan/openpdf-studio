@@ -1,26 +1,11 @@
-# Runtime security status — 2026-10-22
+# Runtime security review — 2026-11-09
 
-This source release does not include a desktop installer. The already installed private development app is outside this public-source staging directory and was not modified.
+- Build runtime: **Node 26.13.0 LTS**, verified against the [official release index](https://nodejs.org/dist/index.json) and [release notes](https://nodejs.org/en/blog/release/v26.13.0). The local arm64 archive was SHA-256 checked against official SHASUMS; the actual binary reports 26.13.0. `.nvmrc` and Windows CI select this version. The unrelated host default remains 26.12.1 and was not used for the current build.
+- Desktop runtime: **Electron 45.2.3**, the [official stable release](https://releases.electronjs.org/release/v45.2.3), with embedded **Node 24.22.2** and Chromium **156.0.8078.80**. Both official metadata and the installed executable were checked. This replaces the previously blocked 44.9.3 pin.
+- `check-runtime.cjs --electron --installed` checks the host Node, queries official metadata, checks the installed Electron pin and runs that executable to inspect its real `process.versions`. `npm start`, UI tests and packaging use this gate. Packaged smoke tests check the shipped executable again.
+- `glob` and `minimatch` overrides select patched versions for the packaging dependency tree; `undici` was patched through the lockfile. `npm audit` reports zero known vulnerabilities at this review. The build and packaging tests validate the updated tooling.
+- The [November 11 Node security release announcement](https://nodejs.org/en/blog/vulnerability/november-2026-security-releases) is already published; those fixes are not yet available as of this review. Recheck official advisories and update the gate, `.nvmrc`, Electron pin and lockfile before distributing a later build. The dated gate cannot certify fixes that have not shipped.
 
-## Verified upstream information
+The supported build lines are 24 (minimum reviewed 24.22.2) and 26 (minimum reviewed 26.13.0). The check is a dated release baseline, not an assurance against unknown vulnerabilities. Metadata/network failures block source launch and packaging verification. The packaged application itself does not need an internet connection or perform update checks.
 
-- [Node.js 2026-10-21 security advisory](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases): patched releases include 22.23.4, 24.22.1 and 26.12.1. The official [release index](https://nodejs.org/dist/index.json) identifies 24.22.1 as the newest LTS patch at the time of this check.
-- Build/desktop-logic validation uses the official **Node 24.22.1 arm64** distribution; its archive was checked against official SHA-256 sums. The unrelated host default Node 26.3.0 was identified as outdated and was not used for these builds. Other projects' global runtime was not changed.
-- [Electron release metadata](https://releases.electronjs.org/releases.json): the latest stable 45.0.0 and maintained 44.x patch 44.9.3 both report embedded Node **24.22.0**. The source is pinned to 44.9.3 to avoid an unrelated major API migration.
-- We do not infer that every Node vulnerability is reachable through this PDF app. However, the strict release policy requires verified patched runtime coverage; we lack evidence of the needed fixes in those Electron builds.
-
-## Gate behavior
-
-`npm start` and `npm run package` first query official Electron release metadata and reject an unverified or below-baseline embedded Node version. No affected desktop runtime was launched during this release check. A network error also prevents this verification.
-
-Frontend build, Python engine tests and Node-only batch-conversion tests remain available. Previous UI screenshots demonstrate the private 0.1.13 implementation; they are not evidence that the new Electron pin passed a fresh UI regression.
-
-## Unblocking a desktop release
-
-1. Check official Node and Electron advisories again, not only this dated minimum table.
-2. Choose a supported Electron stable patch that includes the fixes. Update `devDependencies.electron` and the lockfile together; the packager uses the same pin.
-3. Run the metadata gate, then inspect actual `process.versions` in the installed runtime and the packaged app.
-4. Run engine, desktop logic, Chinese/English UI, save/reopen and package portability regressions.
-5. Complete transitive license notices, signing/notarization decisions and source-offer checks before adding binary downloads.
-
-The version gate records a dated floor, not a claim that later versions have no unknown vulnerabilities. No Docker image, cloud application server or PHP runtime is part of this source release. The project website is static HTML/CSS and uses no Node service in production.
+This project has no PHP runtime, container base image or deployed Node service. [Native Windows CI](https://github.com/aotefan/openpdf-studio/actions/runs/42645629472) verified build Node 26.13.0 and the installed and packaged Electron 45.2.3 / Node 24.22.2 executables on Windows Server 2025. The Windows worker was built with uv-managed CPython 3.12.14 x64, also recorded in its `build-info.json`. Current Windows build/verification instructions are in [windows.md](windows.md).

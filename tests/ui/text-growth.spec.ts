@@ -15,7 +15,7 @@ for(const locale of ['zh-CN','en-US'])test(`${locale}: text frame expands and sa
   await expect(page.locator('[role=alert]')).toHaveCount(0);
   await page.screenshot({path:`tests/results/text-growth-${locale}.png`});
   const out=path.join(root,`tests/results/text-growth-${locale}.pdf`);await fs.rm(out,{force:true});await app.evaluate(({dialog},file)=>{dialog.showSaveDialog=async()=>({canceled:false,filePath:file})},out);
-  await input.press('Meta+s');await expect.poll(async()=>!!(await fs.stat(out).catch(()=>null))).toBe(true);await expect(input).toHaveCount(0);
+  await input.press(process.platform==='darwin'?'Meta+s':'Control+s');await expect.poll(async()=>!!(await fs.stat(out).catch(()=>null))).toBe(true);await expect(input).toHaveCount(0);
   const saved=await fs.readFile(out,'base64');const objects=await page.evaluate(async data=>{const d=await window.studio.rpc('open',{data,name:'reopened.pdf'});return window.studio.rpc('objects',{sid:d.id,page:0})},saved);
   const text=objects.texts.find(x=>x.text===content);expect(text).toBeTruthy();expect(text.rect[2]-text.rect[0]).toBeGreaterThan(300);
   expect(objects.texts.some(x=>x.text==='Unchanged text')).toBe(true);

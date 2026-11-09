@@ -1,0 +1,7 @@
+# Offline CPU OCR, with Chinese/English models inside the pinned wheel.
+rapidocr-onnxruntime==1.4.4
+onnxruntime==1.31.1
+opencv-python==5.0.0.93
+numpy==2.5.4
+shapely==2.2.0
+pyclipper==1.4.0

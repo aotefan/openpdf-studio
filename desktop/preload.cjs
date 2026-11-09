@@ -1,5 +1,6 @@
 const {contextBridge,ipcRenderer}=require('electron');
 contextBridge.exposeInMainWorld('studio',{
+ platform:process.platform,
  batch:(action,value)=>ipcRenderer.invoke('batch-conversion',action,value),
  rpc:(method,params)=>ipcRenderer.invoke('rpc',method,params),
  pick:kind=>ipcRenderer.invoke('pick',kind),save:result=>ipcRenderer.invoke('save',result),
