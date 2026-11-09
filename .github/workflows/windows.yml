@@ -14,7 +14,7 @@ jobs:
       PYTHONUTF8: '1'
       PYTHONIOENCODING: utf-8
       OPENPDF_OCR_BACKEND: rapidocr
-      OPENPDF_EVIDENCE: ${{ runner.temp }}/openpdf-evidence
+      OPENPDF_EVIDENCE: tests/results/windows-evidence
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: actions/setup-node@v7.1.0
@@ -51,6 +51,4 @@ jobs:
         if: always()
         with:
           name: windows-test-evidence
-          path: |
-            tests/results
-            ${{ runner.temp }}/openpdf-evidence
+          path: tests/results
