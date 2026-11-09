@@ -8,4 +8,4 @@
 
 The supported build lines are 24 (minimum reviewed 24.22.2) and 26 (minimum reviewed 26.13.0). The check is a dated release baseline, not an assurance against unknown vulnerabilities. Metadata/network failures block source launch and packaging verification. The packaged application itself does not need an internet connection or perform update checks.
 
-This project has no PHP runtime, container base image or deployed Node service. Windows CI must verify its real host and packaged runtimes; a macOS run does not constitute Windows runtime validation. Current Windows build/verification instructions are in [windows.md](windows.md).
+This project has no PHP runtime, container base image or deployed Node service. [Native Windows CI](https://github.com/aotefan/openpdf-studio/actions/runs/42645629472) verified build Node 26.13.0 and the installed and packaged Electron 45.2.3 / Node 24.22.2 executables on Windows Server 2025. The Windows worker was built with uv-managed CPython 3.12.14 x64, also recorded in its `build-info.json`. Current Windows build/verification instructions are in [windows.md](windows.md).

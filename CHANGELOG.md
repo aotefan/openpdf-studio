@@ -1,10 +1,11 @@
-# 0.2.0 — Windows x64 source preview
+# 0.2.0 — Windows x64 portable preview (2026-11-09)
 
 - Add Windows native worker paths, UTF-8 RPC, hidden background consoles, Ctrl shortcuts and platform-correct menus/help.
 - Bundle offline Chinese/English RapidOCR models in Windows engine builds; retain Apple Vision on macOS.
-- Add native PyInstaller builds, Windows portable ZIP packaging, locked Python dependencies, CI and relocated-app smoke coverage. Windows execution remains pending until the native job passes.
+- Add native PyInstaller builds, Windows portable ZIP packaging, locked Python dependencies, CI and relocated-app smoke coverage. Windows Server 2025 CI passed 90 engine, 15 desktop and 28 UI tests, plus the relocated package smoke test ([run](https://github.com/aotefan/openpdf-studio/actions/runs/42645629472)).
 - Upgrade Node build pin to 26.13.0 and Electron to 45.2.3; verify actual embedded Node and fix packaging dependency advisories.
 - Keep PDF-library diagnostics off the worker JSON channel so XLSX exports remain usable.
+- Use Python 3.12.14 on Windows through uv; preserve pypdf CMap code points in independent save-readback tests using JSON transport.
 
 # 0.1.14 — Public source preview (2026-10-22)
 

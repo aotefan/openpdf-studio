@@ -1,12 +1,20 @@
-# Windows x64 源码预览
+# Windows x64 便携预览
 
-0.2.0 增加 Windows 10/11 x64 的启动、离线 OCR、原生菜单及便携 ZIP 构建路径。当前开发主机为 macOS；Windows 原生执行与最终 ZIP 必须由 Windows 工作流或实体机器验收，不能把 macOS 测试视为 Windows 已通过。
+0.2.0 增加 Windows 10/11 x64 的启动、离线 OCR、原生菜单及便携 ZIP 构建路径。2026-11-09 已通过 Windows Server 2025 x64 原生 CI，生成并验收便携包。Windows 10/11 为兼容目标，实体机、高 DPI、多显示器和系统中文输入法的实际体验仍待验证。
 
 ## 使用已构建的便携版
 
-Windows 工作流通过全部测试后，生成 `OpenPDF-Studio-0.2.0-windows-x64.zip` 构建产物。完整解压，运行其中的 `OpenPDF Studio.exe`。保留旁边的 `resources`、DLL 和其他文件；不要只复制 EXE。运行时已包含 Python 引擎、OCR 模型及依赖，不需要安装 Node、Python、Office 或额外语言包，也不需要上传文档。
+[下载 Windows x64 便携构建](https://github.com/aotefan/openpdf-studio/actions/runs/42645629472/artifacts/13688640391)（需登录 GitHub；该产物保存到 2027-02-07）。GitHub 下载的是构建产物外层 ZIP，其中包含 `OpenPDF-Studio-0.2.0-windows-x64.zip`。完整解压内层 ZIP，运行 `OpenPDF Studio-win32-x64/OpenPDF Studio.exe`。保留旁边的 `resources`、DLL 和其他文件；不要只复制 EXE。运行时已包含 Python 引擎、OCR 模型及依赖，不需要安装 Node、Python、Office 或额外语言包，也不需要上传文档。
 
 此版本没有安装器、自动更新、文件关联或代码签名。Windows ARM64 原生构建、32 位 Windows 和 Windows 7/8 不在当前支持范围内。Windows 10 仅指应用兼容目标；操作系统维护周期由 Microsoft 决定。
+
+便携 ZIP 为 296,833,497 字节，解压后约 705 MB。内层 ZIP 的 SHA-256（不是 GitHub 外层产物校验值）：
+
+```text
+899558fe908ce4ae5caff73b471118202bc6ff77ce256dfa05f2e410279c9a69
+```
+
+可用 PowerShell `Get-FileHash .\OpenPDF-Studio-0.2.0-windows-x64.zip -Algorithm SHA256` 核对。下载后已验证 ZIP CRC、主程序和引擎的 x64 PE 标识、3 个 OCR 模型、实际 Python 版本、随包源码和主要许可文件。
 
 ## 从源码构建（PowerShell）
 
@@ -49,7 +57,31 @@ npm run test:packaged
 
 `.github/workflows/windows.yml` 在 Windows runner 上安装锁定依赖，执行引擎、桌面逻辑、中英文 UI、打包和迁移目录后的便携包测试。只有全部成功才上传 ZIP；失败保留测试证据。可在 GitHub Actions 手动运行 `Windows x64 preview`，或由 PR / main 推送触发。
 
-工作流文件已准备，并不表示它已在远端运行；发布下载前必须确认真实 Windows 作业结果。当前本地源码不包含已验证的 Windows 二进制文件。
+已验收的源码提交为 `4854e0382d228ebea1218d62bd0358a8158b6b84`，对应 [Windows 原生作业](https://github.com/aotefan/openpdf-studio/actions/runs/42645629472)。后续文档提交不改变该便携包；不要把其他提交的源码测试结果当作此二进制的证据。
+
+## 2026-11-09 Windows 原生验证记录
+
+环境：Windows Server 2025 x64 / 10.0.26100，Node 26.13.0，Electron 45.2.3（内置 Node 24.22.2、Chromium 156.0.8078.80），Python 3.12.14。Python 来自 uv 管理的独立构建，构建日志与包内 `resources/engine/build-info.json` 保留实际版本。
+
+|检查|结果|
+|---|---|
+|引擎测试|90 项通过，含 RapidOCR 中英文、保存重开及像素完整性|
+|桌面逻辑|15 项通过|
+|中英文 UI|28 项通过；覆盖 1496×855、1280×850、980×640 窗口|
+|原生打包|PyInstaller worker、Electron x64、OCR 模型和便携 ZIP 构建成功|
+|迁移后的成品|复制到中文空格临时目录，以成品 EXE 启动，`app.isPackaged = true`|
+|保存重开|Ctrl+S 保存中文文件名，重开后 3 页、首页旋转 90°符合预期|
+|离线 OCR|设置不可用的 HTTP/HTTPS 代理后，包内模型识别中文和英文，渲染差异为空|
+|导出|成品引擎生成 DOCX、XLSX、PPTX、PNG ZIP、TXT|
+|界面健康|页面身份、文档渲染、无框架错误层、控制台无错误|
+
+真实截图与文件证据见 [Windows 测试产物](https://github.com/aotefan/openpdf-studio/actions/runs/42645629472/artifacts/13688910058)。使用仓库 Playwright 驱动 Windows Electron（Browser plugin not available）；原生文件对话框通过测试替身提供路径，系统对话框交互本身未作人工验收。系统输入法、杀毒软件、代码签名和安装器不在本轮覆盖范围内。
+
+首轮有两项独立 PDF 回读测试因 pypdf 的 CMap 特殊码点不能直接写入严格 UTF-8 管道而失败。原始样本及保存文件的内容检查正常；现改用 ASCII JSON 传输并还原完整字符串，保留原断言，重跑全部 Windows 测试通过。
+
+![Windows 成品从中文目录启动、旋转并保存中文文件名](images/windows-portable.png)
+
+![Windows 中英文离线 OCR 预览及像素完整性结果](images/windows-ocr.png)
 
 ## 2026-11-09 本地验证记录
 
@@ -64,6 +96,6 @@ npm run test:packaged
 |应用迁移目录|通过|macOS 成品移入中文空格目录，保存重开、OCR、DOCX/XLSX/PPTX/PNG/TXT 导出及真实运行时检查|
 |Windows x64 wheels|47 个包解析、下载及安装到隔离目标目录成功|仅依赖可获得性检查，没有执行 Windows DLL|
 |npm audit|0 项已知漏洞|执行时依赖树审计|
-|Windows 原生构建与 UI|尚未执行|需要 Windows runner；当前主机不具备 Windows 环境|
+|Windows 原生构建与 UI|远端通过|见上方 Windows 原生记录；非 macOS 模拟结果|
 
 界面验证使用仓库 Playwright（Browser plugin not available），覆盖 1496×855、1280×850、980×640 的桌面窗口；这是桌面应用，没有移动端支持目标。页面身份、非空白、无框架错误层、控制台及实际交互均通过相关测试。首次回归发现表格库提示污染 JSON 通信，现已将库诊断转到 stderr，并增加通信回归测试。

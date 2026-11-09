@@ -2,15 +2,15 @@
 
 ### 从逆向研究 WPS PDF，到独立开源的本地 PDF 工具
 
-**修改 PDF 文字、编辑图片、PDF 转 Word、本地 OCR、批量转换——把常用 PDF 操作留在自己的 Mac 上。**
+**修改 PDF 文字、编辑图片、PDF 转 Word、本地 OCR、批量转换——把常用 PDF 操作留在自己的电脑上。**
 
-OpenPDF Studio 是面向 **Windows 10/11 x64（适配预览）与 macOS Apple Silicon** 的免费开源 PDF 编辑器。通过 REA 对 WPS PDF 的界面和部分模块做有边界的逆向研究，再用 React、Electron、PyMuPDF 和 Apple Vision 独立实现常用功能。中文界面优先，菜单可即时切换为 English；文档在本地处理，无会员登录和 WPS AI 依赖。
+OpenPDF Studio 是面向 **Windows 10/11 x64（适配预览）与 macOS Apple Silicon** 的免费开源 PDF 编辑器。通过 REA 对 WPS PDF 的界面和部分模块做有边界的逆向研究，再用 React、Electron、PyMuPDF、RapidOCR 和 Apple Vision 独立实现常用功能。中文界面优先，菜单可即时切换为 English；文档在本地处理，无会员登录和 WPS AI 依赖。
 
 [English](README.en.md) · [项目主页](https://aotefan.github.io/openpdf-studio/) · [功能与限制](docs/features.md) · [WPS PDF 逆向研究笔记](research/wps-pdf-reverse-engineering.md) · [常见问题](docs/faq.md) · [参与贡献](CONTRIBUTING.md)
 
 ![免费 PDF 编辑器 OpenPDF Studio：中文工具栏、页面缩略图与直接文字编辑](docs/images/inline-edit-zh-CN.png)
 
-> **当前源码：0.2.0 Windows 适配预览。** 已加入 Windows 启动、离线中英文 OCR、Ctrl 快捷键、便携 ZIP 构建及原生 CI。当前开发验证在 macOS 上完成；Windows 二进制仍须通过 Windows 作业验收。[Windows 构建与验收](docs/windows.md) · [运行时状态](docs/runtime-security.md)。
+> **0.2.0 Windows x64 便携预览已通过原生 CI。** 90 项引擎、15 项桌面、28 项中英文 UI 测试，以及中文目录启动、保存重开、离线 OCR 和导出成品验收均通过。测试环境为 Windows Server 2025；Windows 10/11 实体机体验待验证。[下载便携构建](https://github.com/aotefan/openpdf-studio/actions/runs/42645629472/artifacts/13688640391)（需登录 GitHub）· [Windows 使用与验收](docs/windows.md) · [运行时状态](docs/runtime-security.md)。
 
 ## 为什么做一个免费的 PDF 编辑器？
 
@@ -94,7 +94,7 @@ npm run test:ui
 
 **为什么叫“逆向 WPS PDF”？** 研究的是正常界面行为与有边界的本地模块线索，产品代码独立编写。详情见研究笔记。
 
-**支持 Windows、Intel Mac 或浏览器在线编辑吗？** 当前只验证 macOS Apple Silicon；网页是项目介绍，不是在线 PDF 上传工具。
+**支持 Windows、Intel Mac 或浏览器在线编辑吗？** Windows x64 便携预览已通过 Windows 原生 CI，macOS Apple Silicon 已本地验证。Intel Mac 尚未验证；网页是项目介绍，不是在线 PDF 上传工具。
 
 **和 Java OpenPDF 库是同一个项目吗？** 不是。OpenPDF Studio 是此独立桌面编辑器项目，与其他同名 PDF 库没有隶属关系。
 
