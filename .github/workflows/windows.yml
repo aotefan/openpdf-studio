@@ -21,16 +21,18 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-      - uses: actions/setup-python@v7.1.0
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
-          python-version: '3.12'
-          architecture: x64
-          cache: pip
-          cache-dependency-path: requirements-windows.lock
+          python-version: '3.12.14'
+          python-arch: x86_64
+          enable-cache: true
+          cache-dependency-glob: requirements-windows.lock
       - name: Install native Windows dependencies
         run: |
-          python -m venv .venv
-          .venv\Scripts\python.exe -m pip install -r requirements-windows.lock
+          uv python install 3.12.14
+          uv venv --python 3.12.14 .venv
+          uv pip install --python .venv\Scripts\python.exe -r requirements-windows.lock
+          .venv\Scripts\python.exe -c "import sys,struct; print(sys.version); assert sys.version_info[:3] == (3,12,14); assert struct.calcsize('P') == 8"
           npm ci --ignore-scripts
           node scripts/check-runtime.cjs --electron
           node node_modules/electron/install.js

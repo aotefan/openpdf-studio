@@ -10,11 +10,12 @@ Windows 工作流通过全部测试后，生成 `OpenPDF-Studio-0.2.0-windows-x6
 
 ## 从源码构建（PowerShell）
 
-安装 x64 Node（`.nvmrc` 当前为 26.13.0 LTS）和 Python 3.12。构建前重新核对 [Node 安全公告](https://nodejs.org/en/blog/vulnerability) 与 [Electron 版本](https://releases.electronjs.org/)。然后在项目目录执行：
+安装 x64 Node（`.nvmrc` 当前为 26.13.0 LTS）和 [uv](https://docs.astral.sh/uv/getting-started/installation/)。通过 uv 获取 Python 3.12.14，避免 Windows 官方安装器停留在 3.12.10。构建前重新核对 [Node 安全公告](https://nodejs.org/en/blog/vulnerability) 与 [Electron 版本](https://releases.electronjs.org/)。然后在项目目录执行：
 
 ```powershell
-py -3.12 -m venv .venv
-.venv\Scripts\python.exe -m pip install -r requirements-windows.lock
+uv python install 3.12.14
+uv venv --python 3.12.14 .venv
+uv pip install --python .venv\Scripts\python.exe -r requirements-windows.lock
 npm ci --ignore-scripts
 node scripts/check-runtime.cjs --electron
 node node_modules/electron/install.js
