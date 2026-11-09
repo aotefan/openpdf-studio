@@ -1,6 +1,6 @@
 """Independent local PDF operations. Candidate copies are committed only after preview."""
 from __future__ import annotations
-import base64, io, json, re, uuid, zipfile, subprocess, tempfile, os, math
+import base64, io, json, re, uuid, zipfile, subprocess, tempfile, os, math, sys
 from pathlib import Path
 from dataclasses import dataclass, field
 import pymupdf as fitz
@@ -205,15 +205,24 @@ def diff_report(before,after,regions,structural=False,alpha=False):
         return rows
 
 def recognize_page(page):
-    """Local Vision result becomes an invisible text layer; never alter the scan."""
+    """Local OCR becomes an invisible text layer; never alter the scan."""
     if page.rotation:raise EngineError('ocrRotation')
     if page.get_text().strip():raise EngineError('alreadyText')
-    helper=Path(os.environ.get('OPENPDF_OCR',str(Path(__file__).parent.parent/'build/vision-ocr')))
-    if not helper.exists():raise EngineError('ocrUnavailable')
+    backend=os.environ.get('OPENPDF_OCR_BACKEND','rapidocr' if sys.platform=='win32' else 'vision')
+    if backend=='rapidocr':
+        command=[sys.executable]
+        if not getattr(sys,'frozen',False):command+=['-X','utf8',str(Path(__file__).with_name('worker.py'))]
+        command+=['--ocr']
+    elif backend=='vision':
+        helper=Path(os.environ.get('OPENPDF_OCR',str(Path(__file__).parent.parent/'build/vision-ocr')))
+        if not helper.is_file():raise EngineError('ocrUnavailable')
+        command=[str(helper)]
+    else:raise EngineError('ocrUnavailable')
     try:
         with tempfile.TemporaryDirectory() as td:
             path=Path(td)/'page.png';path.write_bytes(png(page,2))
-            result=subprocess.run([str(helper),str(path)],capture_output=True,text=True,timeout=120)
+            result=subprocess.run([*command,str(path)],capture_output=True,text=True,encoding='utf-8',timeout=120,
+                                  creationflags=subprocess.CREATE_NO_WINDOW if sys.platform=='win32' else 0)
         if result.returncode:raise EngineError('ocrFailed')
         lines=json.loads(result.stdout)
         if not isinstance(lines,list):raise ValueError()

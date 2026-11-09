@@ -16,7 +16,7 @@ Settings → Interface language switches immediately between Simplified Chinese 
 
 Inline text: choose Edit, click text on the page and type. Enter or the nearby check mark opens a preview; Esc cancels the draft. The inspector controls size, color and style. Unapplied text is protected when navigating away.
 
-Batch conversion: Convert / Batch → Batch conversion → Choose PDF files → Choose output folder → review outputs → Start batch conversion. Cancel discards staged results. All-success output can be opened in Finder. Reads disk files, excluding unsaved edits. OCR and save scans before DOCX/XLSX/TXT conversion.
+Batch conversion: Convert / Batch → Batch conversion → Choose PDF files → Choose output folder → review outputs → Start batch conversion. Cancel discards staged results. All-success output can be opened in the system file manager. Reads disk files, excluding unsaved edits. OCR and save scans before DOCX/XLSX/TXT conversion.
 
 Keyword markup (0.1.10): Annotate → Highlight / Underline / Strikeout → enter a keyword and page range → choose color and opacity → preview and apply. Also available under Batch → Keyword markup. Original text, fonts and underlying graphics are retained. Manage keyword markups lists only annotations created by this feature; selected removal, undo/redo and saved persistence are supported. OCR scans first. Search is ASCII case-insensitive and matches substrings; identical type/region pairs are skipped. Strikeout is a visual annotation, not redaction.
 

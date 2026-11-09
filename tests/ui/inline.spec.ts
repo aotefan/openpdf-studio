@@ -63,7 +63,7 @@ test('Chinese inline input: automatic navigation/save, IME, retarget, overflow, 
   const out=path.join(root,'tests/results/inline-autosave.pdf');await fs.rm(out,{force:true});
   await app.evaluate(({dialog},file)=>{dialog.showSaveDialog=async()=>({canceled:false,filePath:file})},out);
   // Command-S while the textarea owns focus must flush before exporting.
-  await input.press('Meta+s');
+  await input.press(process.platform==='darwin'?'Meta+s':'Control+s');
   await expect.poll(async()=>!!(await fs.stat(out).catch(()=>null))).toBe(true);
   await expect(page.locator('.dirty-dot')).toHaveCount(0);
   const savedBytes=await fs.readFile(out,'base64');

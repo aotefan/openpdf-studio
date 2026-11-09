@@ -1,3 +1,11 @@
+# 0.2.0 — Windows x64 source preview
+
+- Add Windows native worker paths, UTF-8 RPC, hidden background consoles, Ctrl shortcuts and platform-correct menus/help.
+- Bundle offline Chinese/English RapidOCR models in Windows engine builds; retain Apple Vision on macOS.
+- Add native PyInstaller builds, Windows portable ZIP packaging, locked Python dependencies, CI and relocated-app smoke coverage. Windows execution remains pending until the native job passes.
+- Upgrade Node build pin to 26.13.0 and Electron to 45.2.3; verify actual embedded Node and fix packaging dependency advisories.
+- Keep PDF-library diagnostics off the worker JSON channel so XLSX exports remain usable.
+
 # 0.1.14 — Public source preview (2026-10-22)
 
 - Publish independent source under AGPL-3.0-or-later with Chinese/English documentation and synthetic test fixtures.

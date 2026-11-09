@@ -15,6 +15,12 @@ Project source: AGPL-3.0-or-later. This repository publishes the independent app
 |lxml|BSD — https://lxml.de|XML dependency|
 |pypdf|BSD-3-Clause — https://github.com/py-pdf/pypdf|Independent test reader|
 |PyInstaller|GPL with bootloader distribution exception — https://pyinstaller.org|Local engine packaging|
+|RapidOCR and bundled PP-OCR models|Apache-2.0 — https://github.com/RapidAI/RapidOCR ; https://github.com/PaddlePaddle/PaddleOCR|Windows offline Chinese/English OCR|
+|ONNX Runtime|MIT — https://github.com/microsoft/onnxruntime|CPU inference|
+|OpenCV|Apache-2.0 with third-party notices — https://github.com/opencv/opencv-python|OCR image processing|
+|NumPy / Shapely / pyclipper|BSD-3-Clause / BSD-3-Clause (GEOS LGPL) / MIT — respective package license metadata|OCR arrays and geometry|
 |Apple Vision|macOS system framework|Local OCR; not copied as a separate library|
 
 Selected installed license files retained in docs/third-party-licenses. Electron distribution includes LICENSE and LICENSES.chromium.html. Full transitive audit remains a release gate for public redistribution; repository metadata alone is not a license determination. All WPS research evidence is excluded from the packaged application. No WPS assets or binaries are linked/copied.
+
+Windows packaging preserves OCR distribution metadata and license files under the frozen worker. The application source, build scripts, lockfiles and notices accompany the package in resources/app/source. Review the retained transitive notices before public redistribution.

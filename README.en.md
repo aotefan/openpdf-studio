@@ -1,6 +1,6 @@
 # OpenPDF Studio — Free, Open-Source PDF Editor
 
-**WPS PDF interaction research, independently implemented for local editing on Apple Silicon Macs.**
+**WPS PDF interaction research, independently implemented for local editing on Windows x64 (preview) and Apple Silicon Macs.**
 
 Edit PDF text and images, organize pages, run local Chinese/English OCR, export text-based Word documents, and batch-convert PDFs. No WPS subscription, account, or WPS AI service is required. Application menus switch instantly between Simplified Chinese and English; document content is not translated.
 
@@ -10,7 +10,7 @@ Edit PDF text and images, organize pages, run local Chinese/English OCR, export 
 
 ## Release status
 
-Version 0.1.14 is a **source preview**, based on the locally tested 0.1.13 implementation. No installer is published in this release. As checked on 2026-10-22, the reviewed Electron releases embed a Node version below the latest security baseline. Desktop launch and packaging are gated until a patched Electron release is verified. See [runtime security](docs/runtime-security.md).
+Version 0.2.0 adds Windows x64 launch paths, offline Chinese/English OCR, native Ctrl shortcuts, portable ZIP packaging and a Windows CI workflow. Local verification runs on macOS; Windows binaries require a successful native Windows job before release. See [Windows build instructions](docs/windows.md) and [runtime security](docs/runtime-security.md).
 
 ## Features
 
@@ -21,7 +21,7 @@ Version 0.1.14 is a **source preview**, based on the locally tested 0.1.13 imple
 |Pages|Rotate, insert, delete, reorder, merge, split, extract, watermark and page numbers|500-page document limit|
 |PDF to Word|DOCX text paragraphs|Not a lossless layout-preserving conversion|
 |Other exports|XLSX tables/text rows, PPTX page images, PNG ZIP, TXT|PPTX output is raster page images|
-|OCR|Local Apple Vision Chinese/English searchable text layers|No deskew or scan-image text replacement; mixed/rotated pages can be skipped|
+|OCR|Windows offline models / macOS Apple Vision Chinese/English searchable text layers|No deskew or scan-image text replacement; mixed/rotated pages can be skipped|
 |Batch operations|Multiple-file conversions; current-document text replacement and page-range OCR|Multiple-file OCR is not implemented|
 |History|Undo/redo, save a copy, recover the last active document|Full rewrite rather than incremental saving|
 
@@ -29,7 +29,7 @@ Input limit: 60 MB and 500 pages per PDF. Encrypted, modification-restricted and
 
 ## Build from source
 
-Requirements: macOS Apple Silicon, Xcode Command Line Tools, Python 3.12, uv, and a currently supported security-patched Node release. The reviewed LTS baseline is recorded in `.nvmrc`; recheck upstream security advisories before a new release.
+For Windows, follow [the native build instructions](docs/windows.md). macOS requirements: Apple Silicon, Xcode Command Line Tools, Python 3.12, uv, and a currently supported security-patched Node release. The reviewed LTS baseline is recorded in `.nvmrc`; recheck upstream security advisories before a new release.
 
 ```sh
 git clone https://github.com/aotefan/openpdf-studio.git
@@ -44,7 +44,7 @@ npm run test:engine
 npm run test:desktop
 ```
 
-Run `npm run check:runtime -- --electron` before installing or launching the Electron binary. The current pin is intentionally blocked pending an upstream security update. After updating the pin to a verified patched release and passing regression tests, run `node node_modules/electron/install.js` and `npm start`.
+Run `npm run check:runtime -- --electron` before installing or launching the Electron binary. Electron 45.2.3 now passes the metadata and actual-runtime checks. Install with `node node_modules/electron/install.js`, verify with `npm run check:runtime -- --electron --installed`, then use `npm start`.
 
 ## What “reverse-engineering WPS PDF” means here
 

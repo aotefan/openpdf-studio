@@ -41,7 +41,7 @@ for(const locale of ['zh-CN','en-US'])test(`${locale}: format shortcuts save onc
   await page.locator('dialog footer').getByRole('button',{name:t.convert,exact:true}).click();await expect.poll(async()=>(await calls()).length).toBe(1);await expect(page.locator('.busy-mask')).toHaveCount(0);
   expect(await fs.readFile(path.join(output,'generic.txt'),'utf8')).toContain('OpenPDF Studio');
   await expect(page.locator('.dirty-dot')).toHaveCount(1);await button('undo').click();await expect(page.locator('.busy-mask')).toHaveCount(0);await expect(button('redo')).toBeEnabled();
-  const readback=JSON.parse(execFileSync(path.join(root,'.venv/bin/python'),['-c',
+  const readback=JSON.parse(execFileSync(path.join(root,process.platform==='win32'?'.venv/Scripts/python.exe':'.venv/bin/python'),['-c',
    'import sys,json;from pathlib import Path;from docx import Document;from openpyxl import load_workbook;from pptx import Presentation;p=Path(sys.argv[1]);print(json.dumps({"word":any("OpenPDF Studio" in x.text for x in Document(p/"export.docx").paragraphs),"excel":len(load_workbook(p/"export.xlsx").worksheets),"ppt":len(Presentation(p/"export.pptx").slides)}))',output],{encoding:'utf8'}));
   expect(readback).toEqual({word:true,excel:3,ppt:3});await fs.writeFile(path.join(output,'readback.json'),JSON.stringify(readback,null,2));
   expect(errors).toEqual([]);await expect(page.locator('vite-error-overlay')).toHaveCount(0);

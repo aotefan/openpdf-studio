@@ -12,7 +12,7 @@ export type OcrProgress={job:string;pages:OcrPage[];total:number;completed:numbe
 export type Preview={markupValidated?:boolean;focusPage?:number;ocrPages?:OcrPage[];summary?:string;token:string;changes:number;warnings:string[];diff:{page:number;changed:boolean;bounds?:number[];structural?:boolean;outsideRegionChanged?:boolean}[];pages:number;revision:number};
 export type Export={data:string;name:string;extension:string};
 export type FileData={data:string;name:string};
-declare global {interface Window{studio:{batch:(action:string,value?:string)=>Promise<BatchConversionState>;rpc<T=any>(method:string,params?:Record<string,unknown>):Promise<T>;pick(kind?:string):Promise<FileData|null>;save(result:Export):Promise<boolean>;language():Promise<string>;setLocale(lng:string):Promise<void>;onCommand(callback:(command:string)=>void):()=>void;recovery(action:string,data?:unknown):Promise<any>}}}
+declare global {interface Window{studio:{platform:string;batch:(action:string,value?:string)=>Promise<BatchConversionState>;rpc<T=any>(method:string,params?:Record<string,unknown>):Promise<T>;pick(kind?:string):Promise<FileData|null>;save(result:Export):Promise<boolean>;language():Promise<string>;setLocale(lng:string):Promise<void>;onCommand(callback:(command:string)=>void):()=>void;recovery(action:string,data?:unknown):Promise<any>}}}
 
 export type BatchConversionState={files:{name:string;size:number;output:string;status:string}[];destination:string;format:string;phase:string;completed:number;error:string;failedFile:string;result:string};
 

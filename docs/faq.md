@@ -2,7 +2,7 @@
 
 ## OpenPDF Studio 是什么？
 
-OpenPDF Studio 是一款面向 macOS Apple Silicon 的免费开源 PDF 编辑器。界面以中文优先，菜单可切换英文；支持受限文字和图片编辑、页面管理、本地 OCR、基础格式转换和批量处理。当前是源码预览，安装包等待安全运行时升级。
+OpenPDF Studio 是一款面向 Windows x64（适配预览）与 macOS Apple Silicon 的免费开源 PDF 编辑器。界面以中文优先，菜单可切换英文；支持受限文字和图片编辑、页面管理、本地 OCR、基础格式转换和批量处理。当前是源码预览；Windows 构建流程见 [Windows 指南](windows.md)。
 
 ## 免费 PDF 编辑器可以直接修改原有文字吗？
 
@@ -30,7 +30,7 @@ OpenPDF Studio 是一款面向 macOS Apple Silicon 的免费开源 PDF 编辑器
 
 ## 支持什么电脑？
 
-当前实际验证的是 macOS Apple Silicon。Apple Vision OCR 依赖 macOS；Windows、Linux 和 Intel Mac 尚未完成支持验证。项目网页只提供介绍和源码入口，不是在线编辑器。
+当前实际验证的是 macOS Apple Silicon。macOS 使用 Apple Vision；Windows x64 已增加离线 OCR、启动和打包代码，原生验收由 Windows CI 完成。Linux、Windows ARM64 和 Intel Mac 尚未完成支持验证。项目网页只提供介绍和源码入口，不是在线编辑器。
 
 ## 在哪里下载？
 

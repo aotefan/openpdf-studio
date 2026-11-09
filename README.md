@@ -4,13 +4,13 @@
 
 **修改 PDF 文字、编辑图片、PDF 转 Word、本地 OCR、批量转换——把常用 PDF 操作留在自己的 Mac 上。**
 
-OpenPDF Studio 是面向 **macOS Apple Silicon** 的免费开源 PDF 编辑器。通过 REA 对 WPS PDF 的界面和部分模块做有边界的逆向研究，再用 React、Electron、PyMuPDF 和 Apple Vision 独立实现常用功能。中文界面优先，菜单可即时切换为 English；文档在本地处理，无会员登录和 WPS AI 依赖。
+OpenPDF Studio 是面向 **Windows 10/11 x64（适配预览）与 macOS Apple Silicon** 的免费开源 PDF 编辑器。通过 REA 对 WPS PDF 的界面和部分模块做有边界的逆向研究，再用 React、Electron、PyMuPDF 和 Apple Vision 独立实现常用功能。中文界面优先，菜单可即时切换为 English；文档在本地处理，无会员登录和 WPS AI 依赖。
 
 [English](README.en.md) · [项目主页](https://aotefan.github.io/openpdf-studio/) · [功能与限制](docs/features.md) · [WPS PDF 逆向研究笔记](research/wps-pdf-reverse-engineering.md) · [常见问题](docs/faq.md) · [参与贡献](CONTRIBUTING.md)
 
 ![免费 PDF 编辑器 OpenPDF Studio：中文工具栏、页面缩略图与直接文字编辑](docs/images/inline-edit-zh-CN.png)
 
-> **当前发布：0.1.14 源码预览。** 核心功能来自本机已测试的 0.1.13。此次公开源码、文档与测试；暂不提供安装包。2026-10-22 核查发现 Electron 内置 Node 尚低于最新安全补丁要求，桌面启动/打包设有版本检查。详见[运行时状态](docs/runtime-security.md)。
+> **当前源码：0.2.0 Windows 适配预览。** 已加入 Windows 启动、离线中英文 OCR、Ctrl 快捷键、便携 ZIP 构建及原生 CI。当前开发验证在 macOS 上完成；Windows 二进制仍须通过 Windows 作业验收。[Windows 构建与验收](docs/windows.md) · [运行时状态](docs/runtime-security.md)。
 
 ## 为什么做一个免费的 PDF 编辑器？
 
@@ -27,7 +27,7 @@ OpenPDF Studio 是面向 **macOS Apple Silicon** 的免费开源 PDF 编辑器�
 |合并、拆分、旋转 PDF|页面管理、多选、排序、提取、合并、拆分、页码、水印|最多 500 页；页面尺寸调整不等于重新排版|
 |PDF 转 Word|导出 DOCX 文字段落|不是保留所有排版的无损转换|
 |PDF 转 Excel / PPT / 图片|表格或文字行输出 XLSX；页面图片输出 PPTX；PNG ZIP|PPT 页面图片不能作为原生文字编辑|
-|扫描 PDF 文字识别|Apple Vision 本地中英文 OCR，生成可搜索文字层|已有文字、旋转或混合页可能跳过；不替换扫描图像中的文字|
+|扫描 PDF 文字识别|Windows 离线模型 / macOS Apple Vision 中英文 OCR，生成可搜索文字层|已有文字、旋转或混合页可能跳过；不替换扫描图像中的文字|
 |批量处理 PDF|多文件转换、当前文档全文替换、页码/水印及页范围 OCR|多文件 OCR、任意图片批量替换尚未实现|
 |撤销、重做、保存|编辑历史、另存副本、最近活动文档恢复|非增量保存；重启不恢复撤销栈|
 
@@ -43,7 +43,7 @@ OpenPDF Studio 是面向 **macOS Apple Silicon** 的免费开源 PDF 编辑器�
 
 ## 获取源码与构建
 
-当前验证平台：macOS Apple Silicon。需要 Xcode Command Line Tools、Python 3.12、uv 和仍受支持且已修复已知漏洞的 Node.js。
+Windows 请按 [Windows 构建指南](docs/windows.md) 操作。以下为 macOS Apple Silicon 流程，需要 Xcode Command Line Tools、Python 3.12、uv 和仍受支持且已修复已知漏洞的 Node.js。
 
 ```sh
 git clone https://github.com/aotefan/openpdf-studio.git
@@ -61,12 +61,13 @@ npm run build
 
 ```sh
 npm run check:runtime -- --electron
-# 仅在检查通过且 Electron 安全更新已完成回归后：
+# 官方元数据通过后安装，再核验实际运行时：
 node node_modules/electron/install.js
+npm run check:runtime -- --electron --installed
 npm start
 ```
 
-当前锁定的 Electron 会被上述检查拦截，等待上游安全版本；不提供绕过检查的启动建议。[查看状态与后续升级步骤](docs/runtime-security.md)。
+已升级至通过实际版本核验的 Electron 45.2.3；后续发布仍需重新核对安全公告。[查看核验记录](docs/runtime-security.md)。
 
 测试使用项目生成的 PDF，不需要 WPS 安装或会员：
 
