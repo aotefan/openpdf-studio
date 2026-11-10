@@ -1,5 +1,16 @@
 # OpenPDF Studio · 免费 PDF 编辑器
 
+## 下载安装 · v0.2.2
+
+| Mac（Apple Silicon / M 系列） | Windows（64 位 x64） |
+|---|---|
+| **[⬇ 下载 Mac 安装包（DMG）](https://github.com/aotefan/openpdf-studio/releases/download/v0.2.2/OpenPDF-Studio-0.2.2-macos-arm64.dmg)** | **[⬇ 下载 Windows 便携版（ZIP）](https://github.com/aotefan/openpdf-studio/releases/download/v0.2.2/OpenPDF-Studio-0.2.2-windows-x64.zip)** |
+| macOS 14 或更高版本；打开 DMG，将应用拖入 Applications | 完整解压 ZIP，运行文件夹内的 OpenPDF Studio.exe |
+
+公开下载，无需登录 GitHub，也无需安装 Python、Node 或 Office。Mac 包不适用于 Intel 芯片。当前为未公证/未代码签名的预览版，首次打开说明见 [Mac 安装指南](docs/macos.md) / [Windows 指南](docs/windows.md)。
+
+[全部版本与更新说明](https://github.com/aotefan/openpdf-studio/releases) · [SHA-256 校验文件](https://github.com/aotefan/openpdf-studio/releases/download/v0.2.2/SHA256SUMS.txt)
+
 ### 从逆向研究 WPS PDF，到独立开源的本地 PDF 工具
 
 **修改 PDF 文字、编辑图片、PDF 转 Word、本地 OCR、批量转换——把常用 PDF 操作留在自己的电脑上。**
@@ -10,7 +21,7 @@ OpenPDF Studio 是面向 **Windows 10/11 x64（适配预览）与 macOS Apple Si
 
 ![免费 PDF 编辑器 OpenPDF Studio：中文工具栏、页面缩略图与直接文字编辑](docs/images/inline-edit-zh-CN.png)
 
-> **0.2.1 高清图片导出与 Windows x64 便携预览。** 默认 300 DPI，可选 600 DPI，支持页码范围和批量导出。Windows 原生 CI 的 109 项引擎、16 项桌面、30 项中英文 UI 测试及成品 600 DPI 导出验收通过。测试环境为 Windows Server 2025；Windows 10/11 实体机体验待验证。[下载便携构建](https://github.com/aotefan/openpdf-studio/actions/runs/42735733204/artifacts/13727436024)（需登录 GitHub）· [高清导出](docs/image-export.md) · [Windows 使用与验收](docs/windows.md) · [运行时状态](docs/runtime-security.md)。
+> **0.2.2 提供 Mac DMG 和 Windows ZIP 直接下载，并更新图片处理依赖。** 图片导出默认 300 DPI，可选 600 DPI，支持页码范围和批量转换。[高清导出](docs/image-export.md) · [Mac 安装](docs/macos.md) · [Windows 使用与验收](docs/windows.md) · [运行时状态](docs/runtime-security.md)。
 
 ## 为什么做一个免费的 PDF 编辑器？
 

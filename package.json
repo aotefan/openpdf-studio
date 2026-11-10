@@ -1,6 +1,6 @@
 {
   "name": "openpdf-studio",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "type": "module",
   "main": "desktop/main.cjs",
@@ -19,7 +19,8 @@
     "pretest:ui": "node scripts/check-runtime.cjs --electron --installed",
     "package:win": "node scripts/package.mjs --platform=win32",
     "build:native": "node scripts/python.cjs scripts/build-native.py",
-    "test:packaged": "node scripts/test-portable.mjs"
+    "test:packaged": "node scripts/test-portable.mjs",
+    "package:mac": "node scripts/package.mjs && node scripts/package-dmg.mjs"
   },
   "dependencies": {
     "i18next": "^25.6.0",

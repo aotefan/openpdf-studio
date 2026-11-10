@@ -1,5 +1,16 @@
 # OpenPDF Studio — Free, Open-Source PDF Editor
 
+## Download · v0.2.2
+
+| Mac (Apple Silicon / M-series) | Windows (x64) |
+|---|---|
+| **[⬇ Download Mac installer (DMG)](https://github.com/aotefan/openpdf-studio/releases/download/v0.2.2/OpenPDF-Studio-0.2.2-macos-arm64.dmg)** | **[⬇ Download Windows portable (ZIP)](https://github.com/aotefan/openpdf-studio/releases/download/v0.2.2/OpenPDF-Studio-0.2.2-windows-x64.zip)** |
+| macOS 14+; open the DMG and drag the app to Applications | Extract the entire ZIP and run OpenPDF Studio.exe |
+
+Public downloads require no GitHub sign-in or separate Python, Node or Office installation. The Mac package does not support Intel Macs. This preview is not notarized or developer-signed; see the [Mac installation guide](docs/macos.md) and [Windows guide](docs/windows.md).
+
+[All releases](https://github.com/aotefan/openpdf-studio/releases) · [SHA-256 checksums](https://github.com/aotefan/openpdf-studio/releases/download/v0.2.2/SHA256SUMS.txt)
+
 **WPS PDF interaction research, independently implemented for local editing on Windows x64 (preview) and Apple Silicon Macs.**
 
 Edit PDF text and images, organize pages, run local Chinese/English OCR, export text-based Word documents, and batch-convert PDFs. No WPS subscription, account, or WPS AI service is required. Application menus switch instantly between Simplified Chinese and English; document content is not translated.
@@ -10,7 +21,7 @@ Edit PDF text and images, organize pages, run local Chinese/English OCR, export 
 
 ## Release status
 
-Version 0.2.1 adds direct 150/300/600 DPI PNG rendering, page-range export and batch quality selection. Native Windows Server 2025 CI passed 109 engine, 16 desktop and 30 bilingual UI tests, plus the relocated packaged-app test with independent 600 DPI PNG readback. Windows 10/11 physical-device testing remains pending. [Download the portable preview](https://github.com/aotefan/openpdf-studio/actions/runs/42735733204/artifacts/13727436024) (GitHub sign-in required); see [Windows instructions and evidence](docs/windows.md) and [runtime security](docs/runtime-security.md). This preview is unsigned and has no installer or auto-updater.
+Version 0.2.2 publishes Mac DMG and Windows ZIP downloads and updates image-processing dependencies. Export lossless PNG images at 150/300/600 DPI with page ranges and batch quality selection. See [Windows validation](docs/windows.md), [Mac installation](docs/macos.md) and [runtime security](docs/runtime-security.md). Windows 10/11 physical-device testing remains pending.
 
 ## Features
 

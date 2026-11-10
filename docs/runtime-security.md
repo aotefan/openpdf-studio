@@ -1,4 +1,15 @@
-# Runtime security review — 2026-11-09
+# Runtime security review — 2026-11-10
+
+## 0.2.2 distribution review
+
+Rechecked the official Node release index and Electron metadata on 2026-11-10. Node 26.13.0 remains the latest stable LTS, and Electron 45.2.3 embeds Node 24.22.2. Actual host and bundled Mac executables passed the version gate. The announced November 11 Node fixes are still pending; future distributions must recheck them.
+
+The pre-distribution Python audit found known advisories affecting Pillow 12.3.0, pypdf 6.20.1 and setuptools 84.0.0. Version 0.2.2 pins **Pillow 13.0.0**, **pypdf 7.0.0** and **setuptools 84.2.1**, verified against current PyPI metadata and upstream release notes ([Pillow](https://pillow.readthedocs.io/en/stable/releasenotes/13.0.0.html), [pypdf](https://pypdf.readthedocs.io/en/stable/meta/CHANGELOG.html)). pypdf is used for independent test readback. `pip-audit --no-deps --disable-pip` found no known advisories in either the updated Windows lockfile or the actual local Python environment; full `npm audit` also reported zero vulnerabilities. These are dated database results, not a guarantee against unknown issues.
+
+The Mac application's declared minimum and OCR deployment target are macOS 14. Every bundled Mach-O target is inspected; a native dependency requiring a newer system fails packaging. DMG files are verified before publication. This preview is ad-hoc signed, without Developer ID signing/notarization; the Windows portable executable is unsigned.
+
+## Prior 0.2.0/0.2.1 review (2026-11-09)
+
 
 - Build runtime: **Node 26.13.0 LTS**, verified against the [official release index](https://nodejs.org/dist/index.json) and [release notes](https://nodejs.org/en/blog/release/v26.13.0). The local arm64 archive was SHA-256 checked against official SHASUMS; the actual binary reports 26.13.0. `.nvmrc` and Windows CI select this version. The unrelated host default remains 26.12.1 and was not used for the current build.
 - Desktop runtime: **Electron 45.2.3**, the [official stable release](https://releases.electronjs.org/release/v45.2.3), with embedded **Node 24.22.2** and Chromium **156.0.8078.80**. Both official metadata and the installed executable were checked. This replaces the previously blocked 44.9.3 pin.

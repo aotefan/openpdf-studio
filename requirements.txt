@@ -13,7 +13,7 @@ macholib==1.16.4; sys_platform == "darwin"
 openpyxl==3.1.5
 opentelemetry-api==1.45.1
 packaging==26.3
-pillow==12.3.0
+pillow==13.0.0
 pluggy==1.6.0
 pydantic==2.14.1
 pydantic-core==2.50.1
@@ -21,12 +21,12 @@ pygments==2.21.0
 pyinstaller==6.22.3
 pyinstaller-hooks-contrib==2026.8
 pymupdf==1.28.2
-pypdf==6.20.1
+pypdf==7.0.0
 pytest==9.1.1
 python-docx==1.2.0
 python-multipart==0.0.32
 python-pptx==1.0.2
-setuptools==84.0.0
+setuptools==84.2.1
 starlette==1.8.0
 typing-extensions==4.16.0
 typing-inspection==0.4.4

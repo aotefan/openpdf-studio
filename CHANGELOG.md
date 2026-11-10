@@ -1,3 +1,10 @@
+# 0.2.2 — Public Mac and Windows downloads (2026-11-10)
+
+- Add a Mac Apple Silicon DMG with an Applications shortcut and bilingual installation instructions; expose direct public downloads in both READMEs.
+- Update Pillow to 13.0.0, pypdf to 7.0.0 and setuptools to 84.2.1 after pre-release dependency review.
+- Target macOS 14 explicitly for the app and native OCR helper; verify every bundled Mach-O deployment target against the declared minimum, avoiding an accidental host-only OCR build.
+- Keep the 300/600 DPI export features and bundle corresponding source and notices in both distributions.
+
 # 0.2.1 — High-resolution image export (2026-11-09)
 
 - Render PNG exports directly from PDF pages at 150, 300 (default), or 600 DPI, with matching PNG resolution metadata and lossless RGB output.

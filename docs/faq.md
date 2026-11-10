@@ -30,11 +30,11 @@ OpenPDF Studio 是一款面向 Windows x64（便携预览）与 macOS Apple Sili
 
 ## 支持什么电脑？
 
-macOS Apple Silicon 已本地验证，Windows x64 已通过 Windows Server 2025 原生 CI，Windows 10/11 实体机体验待验证。macOS 使用 Apple Vision；Windows 使用随包提供的离线 OCR 模型。Linux、Windows ARM64 和 Intel Mac 尚未完成支持验证。项目网页只提供介绍和源码入口，不是在线编辑器。
+macOS Apple Silicon 已本地验证，Windows x64 已通过 Windows Server 2025 原生 CI，Windows 10/11 实体机体验待验证。macOS 使用 Apple Vision；Windows 使用随包提供的离线 OCR 模型。Linux、Windows ARM64 和 Intel Mac 尚未完成支持验证。项目网页只提供介绍、源码和下载入口，不是在线编辑器。
 
 ## 在哪里下载？
 
-在 [GitHub 仓库](https://github.com/aotefan/openpdf-studio) 获取源码；Windows 便携预览可从 [已通过的构建产物](https://github.com/aotefan/openpdf-studio/actions/runs/42645629472/artifacts/13688640391) 下载（需登录 GitHub，构建产物有保存期限）。完整解压后运行 `OpenPDF Studio.exe`。此版本没有安装器、代码签名或自动更新，详见 [Windows 指南](windows.md)。
+直接下载 [Mac DMG（Apple Silicon，macOS 14+）](https://github.com/aotefan/openpdf-studio/releases/download/v0.2.2/OpenPDF-Studio-0.2.2-macos-arm64.dmg) 或 [Windows ZIP（x64）](https://github.com/aotefan/openpdf-studio/releases/download/v0.2.2/OpenPDF-Studio-0.2.2-windows-x64.zip)，无需登录 GitHub。Mac 打开 DMG 后拖入 Applications，Windows 完整解压后运行 EXE。当前为未公证/未代码签名的预览版，见 [Mac 指南](macos.md)和 [Windows 指南](windows.md)。
 
 ## 免费开源是否意味着可以随意闭源出售？
 
