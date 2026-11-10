@@ -36,7 +36,8 @@ def main():
             args += ['--copy-metadata', package]
     else:
         args += ['--exclude-module', 'rapidocr_onnxruntime', '--exclude-module', 'onnxruntime', '--exclude-module', 'cv2']
-        subprocess.run(['swiftc', str(ROOT / 'src/ocr/vision.swift'), '-o', str(BUILD / 'vision-ocr')], check=True)
+        subprocess.run(['swiftc', '-target', f'{platform.machine()}-apple-macos14.0',
+                        str(ROOT / 'src/ocr/vision.swift'), '-o', str(BUILD / 'vision-ocr')], check=True)
     args.append(str(ROOT / 'engine/worker.py'))
     subprocess.run(args, cwd=ROOT, check=True)
     manifest = {'platform': sys.platform, 'arch': platform.machine(), 'python': platform.python_version(),

@@ -6,17 +6,12 @@
 
 ## 使用已构建的便携版
 
-[下载 Windows x64 便携构建](https://github.com/aotefan/openpdf-studio/actions/runs/42735733204/artifacts/13727436024)（需登录 GitHub；该产物保存到 2027-02-08）。GitHub 下载的是构建产物外层 ZIP，其中包含 `OpenPDF-Studio-0.2.1-windows-x64.zip`。完整解压内层 ZIP，运行 `OpenPDF Studio-win32-x64/OpenPDF Studio.exe`。保留旁边的 `resources`、DLL 和其他文件；不要只复制 EXE。运行时已包含 Python 引擎、OCR 模型及依赖，不需要安装 Node、Python、Office 或额外语言包，也不需要上传文档。
+**[下载 Windows x64 便携版 v0.2.2](https://github.com/aotefan/openpdf-studio/releases/download/v0.2.2/OpenPDF-Studio-0.2.2-windows-x64.zip)**。这是公开的 GitHub Release 附件，无需登录，也没有 Actions 构建产物的保存期限。完整解压 ZIP，运行 `OpenPDF Studio-win32-x64/OpenPDF Studio.exe`。保留旁边的 `resources`、DLL 和其他文件；不要只复制 EXE。已包含 Python 引擎、离线 OCR 模型及依赖，无需另外安装 Node、Python 或 Office。
 
-此版本没有安装器、自动更新、文件关联或代码签名。Windows ARM64 原生构建、32 位 Windows 和 Windows 7/8 不在当前支持范围内。Windows 10 仅指应用兼容目标；操作系统维护周期由 Microsoft 决定。
+这是未代码签名的便携预览，没有自动更新或文件关联。Windows 10/11 x64 为兼容目标；Windows ARM64 原生构建、32 位 Windows 和 Windows 7/8 不在支持范围内。
 
-便携 ZIP 为 296,990,705 字节，解压后约 705 MB。内层 ZIP 的 SHA-256（不是 GitHub 外层产物校验值）：
+[发布说明](https://github.com/aotefan/openpdf-studio/releases/tag/v0.2.2) · [SHA256SUMS.txt](https://github.com/aotefan/openpdf-studio/releases/download/v0.2.2/SHA256SUMS.txt)。可用 PowerShell `Get-FileHash .\OpenPDF-Studio-0.2.2-windows-x64.zip -Algorithm SHA256` 与校验文件比较。0.2.2 更新 Pillow、pypdf 和 setuptools；历史版本的哈希与测试记录仅适用于各自版本。
 
-```text
-c913d3a53c4b1296a4588c07fd4db46692260a24d3a26950f52b59b626747f74
-```
-
-可用 PowerShell `Get-FileHash .\OpenPDF-Studio-0.2.1-windows-x64.zip -Algorithm SHA256` 核对。下载后已验证 ZIP CRC、主程序和引擎的 x64 PE 标识、3 个 OCR 模型、实际 Python 版本、随包源码和主要许可文件。
 
 ## 从源码构建（PowerShell）
 
@@ -44,7 +39,7 @@ npm run package:win
 npm run test:packaged
 ```
 
-`package:win` 自动检查已安装的运行时，编译前端，用 PyInstaller 打包本机 Python 引擎，收集 OCR 模型和本地库，生成图标及便携 ZIP。输出在 `release/artifacts.noindex/0.2.1/`。不支持从 Mac 把 macOS 引擎拷进 Windows 安装目录；脚本会直接拒绝这种跨系统构建。
+`package:win` 自动检查已安装的运行时，编译前端，用 PyInstaller 打包本机 Python 引擎，收集 OCR 模型和本地库，生成图标及便携 ZIP。输出在 `release/artifacts.noindex/0.2.2/`。不支持从 Mac 把 macOS 引擎拷进 Windows 安装目录；脚本会直接拒绝这种跨系统构建。
 
 ## Windows 行为
 
@@ -54,6 +49,12 @@ npm run test:packaged
 - Windows OCR 使用 RapidOCR / ONNX Runtime CPU 和随包附带的 PP-OCR 中英文模型；macOS 继续使用 Apple Vision。两者识别结果可能不同。
 - OCR 只添加隐藏搜索文字层，提交前仍执行逐像素核验。混合文字页、旋转页等原有限制不变。单页超时为 120 秒；取消会等待当前页结束后丢弃临时结果。
 - 便携包从移动后的中文空格目录启动；测试覆盖原生保存、保存重开、离线 OCR、Office 导出、运行时真实版本及页面错误。
+
+## 0.2.2 发布验收（2026-11-10）
+
+[Windows 原生 CI](https://github.com/aotefan/openpdf-studio/actions/runs/42785432954) 在提交 `cfac443ac5d462a2240063ff9652082dded07326` 通过 109 项引擎、16 项桌面及 30 项中英文 UI 测试。使用 Pillow 13.0.0、pypdf 7.0.0、setuptools 84.2.1 重新构建的 EXE 从中文空格目录启动，保存重开、离线 OCR 和五种导出全部通过；600 DPI PNG 经独立回读为 4959 × 7017 像素。运行时实测为 Electron 45.2.3 / Node 24.22.2、Python 3.12.14。
+
+发布文件来自上述成功构建，公开下载使用 GitHub Releases，Actions 仅保留构建证据。下面的 0.2.0 / 0.2.1 记录属于历史版本。
 
 ## 自动验收
 

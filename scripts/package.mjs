@@ -36,6 +36,7 @@ const [output] = await packager({dir: stage, out: path.join(root, 'release/artif
   name: 'OpenPDF Studio', icon: path.join(root, 'build', target === 'win32' ? 'OpenPDF.ico' : 'OpenPDF.icns'),
   platform: target, arch: process.arch, electronVersion: devDependencies.electron, overwrite: true,
   prune: false, asar: false, appBundleId: 'studio.openpdf.desktop', appVersion: version,
+  extendInfo: target === 'darwin' ? {LSMinimumSystemVersion: '14.0'} : undefined,
   win32metadata: {CompanyName: 'OpenPDF Studio contributors', FileDescription: 'OpenPDF Studio', ProductName: 'OpenPDF Studio'},
 });
 const resources = target === 'win32' ? path.join(output, 'resources') : path.join(output, 'OpenPDF Studio.app/Contents/Resources');
@@ -43,6 +44,7 @@ await fs.cp(path.join(root, 'build/engine-dist/openpdf-engine'), path.join(resou
 if (target === 'darwin') {
   await fs.copyFile(path.join(root, 'build/vision-ocr'), path.join(resources, 'vision-ocr'));
   const bundle = path.join(output, 'OpenPDF Studio.app');
+  runNode('scripts/python.cjs', 'scripts/check-macos-target.py', bundle);
   execFileSync('codesign', ['--force', '--deep', '--sign', '-', '--preserve-metadata=entitlements', bundle], {stdio: 'inherit'});
   execFileSync('codesign', ['--verify', '--deep', '--strict', bundle], {stdio: 'inherit'});
 } else {
