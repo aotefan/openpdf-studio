@@ -10,7 +10,7 @@ OpenPDF Studio 是面向 **Windows 10/11 x64（适配预览）与 macOS Apple Si
 
 ![免费 PDF 编辑器 OpenPDF Studio：中文工具栏、页面缩略图与直接文字编辑](docs/images/inline-edit-zh-CN.png)
 
-> **0.2.0 Windows x64 便携预览已通过原生 CI。** 90 项引擎、15 项桌面、28 项中英文 UI 测试，以及中文目录启动、保存重开、离线 OCR 和导出成品验收均通过。测试环境为 Windows Server 2025；Windows 10/11 实体机体验待验证。[下载便携构建](https://github.com/aotefan/openpdf-studio/actions/runs/42645629472/artifacts/13688640391)（需登录 GitHub）· [Windows 使用与验收](docs/windows.md) · [运行时状态](docs/runtime-security.md)。
+> **0.2.1 高清图片导出与 Windows x64 便携预览。** 默认 300 DPI，可选 600 DPI，支持页码范围和批量导出。Windows 原生 CI 的 109 项引擎、16 项桌面、30 项中英文 UI 测试及成品 600 DPI 导出验收通过。测试环境为 Windows Server 2025；Windows 10/11 实体机体验待验证。[下载便携构建](https://github.com/aotefan/openpdf-studio/actions/runs/42735733204/artifacts/13727436024)（需登录 GitHub）· [高清导出](docs/image-export.md) · [Windows 使用与验收](docs/windows.md) · [运行时状态](docs/runtime-security.md)。
 
 ## 为什么做一个免费的 PDF 编辑器？
 

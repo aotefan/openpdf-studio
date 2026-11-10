@@ -10,7 +10,7 @@ Edit PDF text and images, organize pages, run local Chinese/English OCR, export 
 
 ## Release status
 
-Version 0.2.0 adds Windows x64 launch paths, offline Chinese/English OCR, native Ctrl shortcuts and portable ZIP packaging. Native Windows Server 2025 CI passed 90 engine, 15 desktop and 28 bilingual UI tests, plus the relocated packaged-app smoke test. Windows 10/11 physical-device testing remains pending. [Download the portable preview](https://github.com/aotefan/openpdf-studio/actions/runs/42645629472/artifacts/13688640391) (GitHub sign-in required); see [Windows instructions and evidence](docs/windows.md) and [runtime security](docs/runtime-security.md). This preview is unsigned and has no installer or auto-updater.
+Version 0.2.1 adds direct 150/300/600 DPI PNG rendering, page-range export and batch quality selection. Native Windows Server 2025 CI passed 109 engine, 16 desktop and 30 bilingual UI tests, plus the relocated packaged-app test with independent 600 DPI PNG readback. Windows 10/11 physical-device testing remains pending. [Download the portable preview](https://github.com/aotefan/openpdf-studio/actions/runs/42735733204/artifacts/13727436024) (GitHub sign-in required); see [Windows instructions and evidence](docs/windows.md) and [runtime security](docs/runtime-security.md). This preview is unsigned and has no installer or auto-updater.
 
 ## Features
 

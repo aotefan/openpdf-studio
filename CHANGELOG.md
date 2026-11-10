@@ -5,6 +5,8 @@
 - Preserve original page numbers in PNG names and include DPI in ZIP names; render one page at a time with page-pixel and archive-size limits.
 - Validate exported pixels, DPI, crop, rotation, annotations, document preservation and retry; independently read back a 600 DPI export from the packaged native worker.
 
+- Windows native validation passed: 109 engine, 16 desktop and 30 UI tests, plus packaged-app 600 DPI PNG readback ([run](https://github.com/aotefan/openpdf-studio/actions/runs/42735733204)). macOS arm64 packaged-app verification also passed.
+
 # 0.2.0 — Windows x64 portable preview (2026-11-09)
 
 - Add Windows native worker paths, UTF-8 RPC, hidden background consoles, Ctrl shortcuts and platform-correct menus/help.
