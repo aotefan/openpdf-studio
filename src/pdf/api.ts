@@ -5,5 +5,5 @@ export const api={
  render:(sid:string,page:number,scale=1,preview?:string)=>window.studio.rpc<{image:string;width:number;height:number}>('render',{sid,page,scale,preview}),
  preview:(sid:string,operations:Op[])=>window.studio.rpc<Preview>('preview',{sid,operations}),
  commit:(sid:string,token:string)=>window.studio.rpc<Doc>('commit',{sid,token}),
- export:(sid:string,format='pdf',pages?:number[])=>window.studio.rpc<Export>('export',{sid,format,pages})
+ export:(sid:string,format='pdf',pages?:number[],dpi?:number)=>window.studio.rpc<Export>('export',{sid,format,pages,dpi})
 };

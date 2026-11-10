@@ -10,7 +10,7 @@ Edit PDF text and images, organize pages, run local Chinese/English OCR, export 
 
 ## Release status
 
-Version 0.2.0 adds Windows x64 launch paths, offline Chinese/English OCR, native Ctrl shortcuts and portable ZIP packaging. Native Windows Server 2025 CI passed 90 engine, 15 desktop and 28 bilingual UI tests, plus the relocated packaged-app smoke test. Windows 10/11 physical-device testing remains pending. [Download the portable preview](https://github.com/aotefan/openpdf-studio/actions/runs/42645629472/artifacts/13688640391) (GitHub sign-in required); see [Windows instructions and evidence](docs/windows.md) and [runtime security](docs/runtime-security.md). This preview is unsigned and has no installer or auto-updater.
+Version 0.2.1 adds direct 150/300/600 DPI PNG rendering, page-range export and batch quality selection. Native Windows Server 2025 CI passed 109 engine, 16 desktop and 30 bilingual UI tests, plus the relocated packaged-app test with independent 600 DPI PNG readback. Windows 10/11 physical-device testing remains pending. [Download the portable preview](https://github.com/aotefan/openpdf-studio/actions/runs/42735733204/artifacts/13727436024) (GitHub sign-in required); see [Windows instructions and evidence](docs/windows.md) and [runtime security](docs/runtime-security.md). This preview is unsigned and has no installer or auto-updater.
 
 ## Features
 
@@ -20,10 +20,12 @@ Version 0.2.0 adds Windows x64 launch paths, offline Chinese/English OCR, native
 |Image editing|Insert/replace/delete, drag/resize, rotate, opacity, central crop|Complex shared, nested or clipped placements can be rejected|
 |Pages|Rotate, insert, delete, reorder, merge, split, extract, watermark and page numbers|500-page document limit|
 |PDF to Word|DOCX text paragraphs|Not a lossless layout-preserving conversion|
-|Other exports|XLSX tables/text rows, PPTX page images, PNG ZIP, TXT|PPTX output is raster page images|
+|Other exports|XLSX tables/text rows, PPTX page images, 150/300/600 DPI lossless PNG ZIP, TXT|PPTX output is raster page images|
 |OCR|Windows offline models / macOS Apple Vision Chinese/English searchable text layers|No deskew or scan-image text replacement; mixed/rotated pages can be skipped|
 |Batch operations|Multiple-file conversions; current-document text replacement and page-range OCR|Multiple-file OCR is not implemented|
 |History|Undo/redo, save a copy, recover the last active document|Full rewrite rather than incremental saving|
+
+[High-resolution image export](docs/image-export.md): choose 600 DPI in Convert → Page images, with page-range selection. The default is 300 DPI.
 
 Input limit: 60 MB and 500 pages per PDF. Encrypted, modification-restricted and signed files are rejected. This is an early research application, not a complete equivalent of every WPS PDF feature.
 

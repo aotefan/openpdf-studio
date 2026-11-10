@@ -314,5 +314,16 @@
   "placeTextHint": "Click the page to place text · Esc to cancel",
   "placeTextPlaceholder": "Add text here",
   "newTextInput": "Enter new text",
-  "placeTextKeys": "Type directly. Enter or click outside to finish, Shift+Enter for a new line, Esc to cancel."
+  "placeTextKeys": "Type directly. Enter or click outside to finish, Shift+Enter for a new line, Esc to cancel.",
+  "exportImages": "Export page images",
+  "imageResolution": "Image resolution",
+  "imageDpi150": "150 DPI · Compact",
+  "imageDpi300": "300 DPI · High quality (recommended)",
+  "imageDpi600": "600 DPI · Ultra high quality",
+  "imageExportSize": "{{count}} pages; page {{page}} is approximately {{width}} × {{height}} pixels.",
+  "imageExportHint": "Render the PDF directly to lossless PNG, one image per page in a ZIP. Higher DPI suits zooming and printing, with larger files. It cannot recover missing detail in a blurry scan.",
+  "imageExportBusy": "Rendering high-resolution images…",
+  "error.invalidImageDpi": "Choose 150, 300 or 600 DPI.",
+  "error.imageExportPageTooLarge": "A selected page exceeds 40 million pixels at this resolution. Choose a lower DPI.",
+  "error.imageExportTooLarge": "The image export exceeds 128 MiB. Select fewer pages or a lower DPI."
 }

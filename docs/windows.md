@@ -2,19 +2,21 @@
 
 0.2.0 增加 Windows 10/11 x64 的启动、离线 OCR、原生菜单及便携 ZIP 构建路径。2026-11-09 已通过 Windows Server 2025 x64 原生 CI，生成并验收便携包。Windows 10/11 为兼容目标，实体机、高 DPI、多显示器和系统中文输入法的实际体验仍待验证。
 
+0.2.1 新增 300 DPI 默认高清、600 DPI 超清图片导出，支持页码范围与批量清晰度设置；Windows 成品已独立回读验证 600 DPI 输出。[使用方法](image-export.md)。
+
 ## 使用已构建的便携版
 
-[下载 Windows x64 便携构建](https://github.com/aotefan/openpdf-studio/actions/runs/42645629472/artifacts/13688640391)（需登录 GitHub；该产物保存到 2027-02-07）。GitHub 下载的是构建产物外层 ZIP，其中包含 `OpenPDF-Studio-0.2.0-windows-x64.zip`。完整解压内层 ZIP，运行 `OpenPDF Studio-win32-x64/OpenPDF Studio.exe`。保留旁边的 `resources`、DLL 和其他文件；不要只复制 EXE。运行时已包含 Python 引擎、OCR 模型及依赖，不需要安装 Node、Python、Office 或额外语言包，也不需要上传文档。
+[下载 Windows x64 便携构建](https://github.com/aotefan/openpdf-studio/actions/runs/42735733204/artifacts/13727436024)（需登录 GitHub；该产物保存到 2027-02-08）。GitHub 下载的是构建产物外层 ZIP，其中包含 `OpenPDF-Studio-0.2.1-windows-x64.zip`。完整解压内层 ZIP，运行 `OpenPDF Studio-win32-x64/OpenPDF Studio.exe`。保留旁边的 `resources`、DLL 和其他文件；不要只复制 EXE。运行时已包含 Python 引擎、OCR 模型及依赖，不需要安装 Node、Python、Office 或额外语言包，也不需要上传文档。
 
 此版本没有安装器、自动更新、文件关联或代码签名。Windows ARM64 原生构建、32 位 Windows 和 Windows 7/8 不在当前支持范围内。Windows 10 仅指应用兼容目标；操作系统维护周期由 Microsoft 决定。
 
-便携 ZIP 为 296,833,497 字节，解压后约 705 MB。内层 ZIP 的 SHA-256（不是 GitHub 外层产物校验值）：
+便携 ZIP 为 296,990,705 字节，解压后约 705 MB。内层 ZIP 的 SHA-256（不是 GitHub 外层产物校验值）：
 
 ```text
-899558fe908ce4ae5caff73b471118202bc6ff77ce256dfa05f2e410279c9a69
+c913d3a53c4b1296a4588c07fd4db46692260a24d3a26950f52b59b626747f74
 ```
 
-可用 PowerShell `Get-FileHash .\OpenPDF-Studio-0.2.0-windows-x64.zip -Algorithm SHA256` 核对。下载后已验证 ZIP CRC、主程序和引擎的 x64 PE 标识、3 个 OCR 模型、实际 Python 版本、随包源码和主要许可文件。
+可用 PowerShell `Get-FileHash .\OpenPDF-Studio-0.2.1-windows-x64.zip -Algorithm SHA256` 核对。下载后已验证 ZIP CRC、主程序和引擎的 x64 PE 标识、3 个 OCR 模型、实际 Python 版本、随包源码和主要许可文件。
 
 ## 从源码构建（PowerShell）
 
@@ -42,7 +44,7 @@ npm run package:win
 npm run test:packaged
 ```
 
-`package:win` 自动检查已安装的运行时，编译前端，用 PyInstaller 打包本机 Python 引擎，收集 OCR 模型和本地库，生成图标及便携 ZIP。输出在 `release/artifacts.noindex/0.2.0/`。不支持从 Mac 把 macOS 引擎拷进 Windows 安装目录；脚本会直接拒绝这种跨系统构建。
+`package:win` 自动检查已安装的运行时，编译前端，用 PyInstaller 打包本机 Python 引擎，收集 OCR 模型和本地库，生成图标及便携 ZIP。输出在 `release/artifacts.noindex/0.2.1/`。不支持从 Mac 把 macOS 引擎拷进 Windows 安装目录；脚本会直接拒绝这种跨系统构建。
 
 ## Windows 行为
 
@@ -57,9 +59,17 @@ npm run test:packaged
 
 `.github/workflows/windows.yml` 在 Windows runner 上安装锁定依赖，执行引擎、桌面逻辑、中英文 UI、打包和迁移目录后的便携包测试。只有全部成功才上传 ZIP；失败保留测试证据。可在 GitHub Actions 手动运行 `Windows x64 preview`，或由 PR / main 推送触发。
 
-已验收的源码提交为 `4854e0382d228ebea1218d62bd0358a8158b6b84`，对应 [Windows 原生作业](https://github.com/aotefan/openpdf-studio/actions/runs/42645629472)。后续文档提交不改变该便携包；不要把其他提交的源码测试结果当作此二进制的证据。
+0.2.1 已验收的源码提交为 `1182711ac8435a6bb535cde651106fa0b1c73497`，对应 [Windows 原生作业](https://github.com/aotefan/openpdf-studio/actions/runs/42735733204)。后续文档提交不改变该便携包；不要把其他提交的源码测试结果当作此二进制的证据。
 
-## 2026-11-09 Windows 原生验证记录
+## 0.2.1 高清导出验证（2026-11-09，美东时间）
+
+[Windows 原生 CI](https://github.com/aotefan/openpdf-studio/actions/runs/42735733204) 全部通过：109 项引擎、16 项桌面、30 项中英文 UI 测试。成品从中文空格目录启动，保存重开、离线 OCR 和五种转换均通过；从包内引擎导出的 600 DPI PNG 经 Pillow 独立读取，像素尺寸为 4959 × 7017，DPI 为 600 × 600。实际运行时仍为 Node 26.13.0、Electron 45.2.3 / 内置 Node 24.22.2、Python 3.12.14。
+
+下载后校验 ZIP CRC、主程序和引擎 x64 PE、Python 版本、三个 OCR 模型、随包 0.2.1 源码和 SHA-256。[完整截图及测试证据](https://github.com/aotefan/openpdf-studio/actions/runs/42735733204/artifacts/13726902328)。macOS arm64 的 0.2.1 成品也通过迁移目录后的保存、OCR、转换及 600 DPI 图片回读。
+
+![Windows 高清图片导出](images/windows-image-export-600.png)
+
+## 0.2.0 Windows 原生验证记录（历史）
 
 环境：Windows Server 2025 x64 / 10.0.26100，Node 26.13.0，Electron 45.2.3（内置 Node 24.22.2、Chromium 156.0.8078.80），Python 3.12.14。Python 来自 uv 管理的独立构建，构建日志与包内 `resources/engine/build-info.json` 保留实际版本。
 

@@ -314,5 +314,16 @@
   "placeTextHint": "点击页面放置文字框 · Esc 取消",
   "placeTextPlaceholder": "在此添加文字",
   "newTextInput": "输入新增文字",
-  "placeTextKeys": "直接输入文字；Enter 或点击空白处完成，Shift+Enter 换行，Esc 取消。"
+  "placeTextKeys": "直接输入文字；Enter 或点击空白处完成，Shift+Enter 换行，Esc 取消。",
+  "exportImages": "导出高清图片",
+  "imageResolution": "图片清晰度",
+  "imageDpi150": "150 DPI · 轻量",
+  "imageDpi300": "300 DPI · 高清（推荐）",
+  "imageDpi600": "600 DPI · 超清",
+  "imageExportSize": "共 {{count}} 页；第 {{page}} 页约 {{width}} × {{height}} 像素。",
+  "imageExportHint": "从 PDF 原稿渲染为无损 PNG，每页一张，打包为 ZIP。更高 DPI 适合放大和打印，文件也更大；原本模糊的扫描件不会凭空增加细节。",
+  "imageExportBusy": "正在渲染高清图片，请稍候…",
+  "error.invalidImageDpi": "请选择 150、300 或 600 DPI。",
+  "error.imageExportPageTooLarge": "所选页面在此清晰度下超过 4000 万像素，请降低 DPI 后重试。",
+  "error.imageExportTooLarge": "图片导出超过 128 MiB，请减少页数或降低 DPI 后重试。"
 }

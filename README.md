@@ -10,7 +10,7 @@ OpenPDF Studio 是面向 **Windows 10/11 x64（适配预览）与 macOS Apple Si
 
 ![免费 PDF 编辑器 OpenPDF Studio：中文工具栏、页面缩略图与直接文字编辑](docs/images/inline-edit-zh-CN.png)
 
-> **0.2.0 Windows x64 便携预览已通过原生 CI。** 90 项引擎、15 项桌面、28 项中英文 UI 测试，以及中文目录启动、保存重开、离线 OCR 和导出成品验收均通过。测试环境为 Windows Server 2025；Windows 10/11 实体机体验待验证。[下载便携构建](https://github.com/aotefan/openpdf-studio/actions/runs/42645629472/artifacts/13688640391)（需登录 GitHub）· [Windows 使用与验收](docs/windows.md) · [运行时状态](docs/runtime-security.md)。
+> **0.2.1 高清图片导出与 Windows x64 便携预览。** 默认 300 DPI，可选 600 DPI，支持页码范围和批量导出。Windows 原生 CI 的 109 项引擎、16 项桌面、30 项中英文 UI 测试及成品 600 DPI 导出验收通过。测试环境为 Windows Server 2025；Windows 10/11 实体机体验待验证。[下载便携构建](https://github.com/aotefan/openpdf-studio/actions/runs/42735733204/artifacts/13727436024)（需登录 GitHub）· [高清导出](docs/image-export.md) · [Windows 使用与验收](docs/windows.md) · [运行时状态](docs/runtime-security.md)。
 
 ## 为什么做一个免费的 PDF 编辑器？
 
@@ -26,10 +26,12 @@ OpenPDF Studio 是面向 **Windows 10/11 x64（适配预览）与 macOS Apple Si
 |编辑 PDF 图片|插入、替换、删除、拖动、缩放、旋转、透明度、居中裁剪|共享、嵌套、复杂裁剪图片可能拒绝直接变换|
 |合并、拆分、旋转 PDF|页面管理、多选、排序、提取、合并、拆分、页码、水印|最多 500 页；页面尺寸调整不等于重新排版|
 |PDF 转 Word|导出 DOCX 文字段落|不是保留所有排版的无损转换|
-|PDF 转 Excel / PPT / 图片|表格或文字行输出 XLSX；页面图片输出 PPTX；PNG ZIP|PPT 页面图片不能作为原生文字编辑|
+|PDF 转 Excel / PPT / 图片|表格或文字行输出 XLSX；页面图片输出 PPTX；150 / 300 / 600 DPI 无损 PNG ZIP|PPT 页面图片不能作为原生文字编辑|
 |扫描 PDF 文字识别|Windows 离线模型 / macOS Apple Vision 中英文 OCR，生成可搜索文字层|已有文字、旋转或混合页可能跳过；不替换扫描图像中的文字|
 |批量处理 PDF|多文件转换、当前文档全文替换、页码/水印及页范围 OCR|多文件 OCR、任意图片批量替换尚未实现|
 |撤销、重做、保存|编辑历史、另存副本、最近活动文档恢复|非增量保存；重启不恢复撤销栈|
+
+[高清图片导出](docs/image-export.md)：在「转换 → 页面转图片」选择 600 DPI，支持按页码导出；默认 300 DPI。
 
 输入限制为单份 PDF 60 MB、500 页。加密、限制修改或带签名的 PDF 会被拒绝。更多细节见[功能清单](docs/features.md)。
 

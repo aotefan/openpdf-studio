@@ -2,6 +2,7 @@ import {useEffect,useRef,useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Modal} from '../ui/primitives';
 import type {BatchConversionState} from '../types';
+import ImageDpiSelect from './ImageDpiSelect';
 export default function BatchConversionDialog({onClose}:{onClose:()=>void}){
  const {t}=useTranslation();const [state,setState]=useState<BatchConversionState|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState('');
  const alive=useRef(true),locked=useRef(false),cancel=useRef(false);
@@ -30,6 +31,7 @@ export default function BatchConversionDialog({onClose}:{onClose:()=>void}){
    <fieldset disabled={busy||!state} className="batch-conversion-controls">
     <button onClick={()=>action('files')}>{t('batchChooseFiles')}</button>
     <label>{t('batchOutputFormat')}<select aria-label={t('batchOutputFormat')} value={state?.format||'docx'} onChange={e=>action('format',e.target.value)}>{['docx','xlsx','pptx','png','txt'].map(f=><option key={f} value={f}>{t(f)}</option>)}</select></label>
+    {state?.format==='png'&&<ImageDpiSelect value={state.dpi} onChange={dpi=>action('dpi',String(dpi))}/>}
     <button onClick={()=>action('folder')}>{t('batchChooseFolder')}</button>
    </fieldset>
    <p className="batch-destination">{t('batchDestination')}: {state?.destination||t('batchNoFolder')}</p>

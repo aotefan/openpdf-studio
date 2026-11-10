@@ -11,3 +11,15 @@ test('changed source fails without publishing',async t=>{const {batch,file,out}=
 test('image-only pages prevent empty text exports, image formats accept them',async t=>{const {batch,out}=await setup(t,async method=>method==='open'?{id:'sid'}:method==='conversion_info'?{imageOnlyPages:1}:method==='export'?{data:'eA=='}:true);await batch.begin();const s=await batch.step();assert.equal(s.error,'batchNeedsOcr');assert.deepEqual(await fs.readdir(out),[]);await batch.configure({format:'png'});const done=await complete(batch);assert.equal(done.phase,'complete');assert.match(done.files[0].output,/\.zip$/)});
 test('invalid configuration, queue bounds and concurrent operations',async t=>{const {batch,file}=await setup(t);await assert.rejects(()=>batch.configure({format:'exe'}),/invalidOperation/);await assert.rejects(()=>batch.configure({files:[]}),/batchFileLimit/);await assert.rejects(()=>batch.configure({files:Array(31).fill(file)}),/batchFileLimit/);await batch.begin();await assert.rejects(()=>batch.begin(),/batchBusy/);await assert.rejects(()=>batch.configure({format:'png'}),/batchBusy/);assert.throws(()=>batch.reset(),/batchBusy/);await batch.cancel();assert.equal(batch.reset().files.length,0)});
 test('output write failure rolls back, input remains',async t=>{const {batch,out,file}=await setup(t);await batch.begin();await fs.rm(batch.stage,{recursive:true});const s=await batch.step();assert.equal(s.phase,'failed');assert.equal(s.error,'batchWriteFailed');assert.equal(await fs.readFile(file,'utf8'),'test PDF bytes');assert.deepEqual(await fs.readdir(out),[])});
+test('PNG resolution reaches the worker, is locked while running and appears in output names',async t=>{
+ const exports=[];
+ const {batch}=await setup(t,async(method,p)=>{if(method==='open')return {id:'sid'};if(method==='export'){exports.push(p);return {data:'eA=='}}return true});
+ assert.equal(batch.status().dpi,300);
+ for(const dpi of [144,601,300.5,'600',true,null])await assert.rejects(()=>batch.configure({dpi}),/invalidImageDpi/);
+ await batch.configure({format:'png',dpi:600});
+ assert.match(batch.status().files[0].output,/-600dpi\.zip$/);
+ await batch.begin();await assert.rejects(()=>batch.configure({dpi:150}),/batchBusy/);
+ await batch.step();const result=await batch.finish();
+ assert.equal(result.phase,'complete');assert.deepEqual(exports,[{sid:'sid',format:'png',dpi:600}]);
+ assert.deepEqual(await fs.readdir(result.result),['001-中文-600dpi.zip']);
+});
