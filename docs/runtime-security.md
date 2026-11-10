@@ -8,6 +8,8 @@ The pre-distribution Python audit found known advisories affecting Pillow 12.3.0
 
 The Mac application's declared minimum and OCR deployment target are macOS 14. Every bundled Mach-O target is inspected; a native dependency requiring a newer system fails packaging. DMG files are verified before publication. This preview is ad-hoc signed, without Developer ID signing/notarization; the Windows portable executable is unsigned.
 
+The [0.2.2 Windows native run](https://github.com/aotefan/openpdf-studio/actions/runs/42785432954) completed 109 engine, 16 desktop and 30 UI tests plus packaged-app readback. The Mac DMG was mounted read-only and its relocated app passed save/reopen, offline OCR and 600 DPI export checks. Both packages use the updated dependency pins.
+
 ## Prior 0.2.0/0.2.1 review (2026-11-09)
 
 

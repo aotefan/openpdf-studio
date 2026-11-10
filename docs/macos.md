@@ -31,6 +31,12 @@ shasum -a 256 OpenPDF-Studio-0.2.2-macos-arm64.dmg
 
 源码位于应用内 `Contents/Resources/app/source`，原生引擎构建版本记录在 `Contents/Resources/engine/build-info.json`。源码按 AGPL-3.0-or-later 提供，第三方许可随包附带。
 
+## 0.2.2 DMG 验收（2026-11-10）
+
+DMG 的磁盘映像校验通过。以只读方式挂载后，将应用复制到中文空格临时目录运行，真实版本为 0.2.2 / Electron 45.2.3 / Node 24.22.2 / Python 3.12.14；保存重开、离线中英文 OCR、五种格式导出和 600 DPI PNG 独立回读均通过，页面无运行时错误。66 个原生部署目标均不高于声明的 macOS 14.0。
+
+DMG 包含 `OpenPDF Studio.app`、指向 `/Applications` 的快捷方式及中英文安装说明。发布附件的 SHA-256 与本地验证包一致；此验证不等于 Apple 公证或在所有 macOS 版本上实测。
+
 ## English
 
 Download the DMG above, open it, drag **OpenPDF Studio.app** to **Applications**, then launch it from Applications. This package targets **macOS 14+ on Apple Silicon**; it does not support Intel Macs. Save your documents and quit an existing copy before replacing it.

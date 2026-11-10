@@ -50,6 +50,12 @@ npm run test:packaged
 - OCR 只添加隐藏搜索文字层，提交前仍执行逐像素核验。混合文字页、旋转页等原有限制不变。单页超时为 120 秒；取消会等待当前页结束后丢弃临时结果。
 - 便携包从移动后的中文空格目录启动；测试覆盖原生保存、保存重开、离线 OCR、Office 导出、运行时真实版本及页面错误。
 
+## 0.2.2 发布验收（2026-11-10）
+
+[Windows 原生 CI](https://github.com/aotefan/openpdf-studio/actions/runs/42785432954) 在提交 `cfac443ac5d462a2240063ff9652082dded07326` 通过 109 项引擎、16 项桌面及 30 项中英文 UI 测试。使用 Pillow 13.0.0、pypdf 7.0.0、setuptools 84.2.1 重新构建的 EXE 从中文空格目录启动，保存重开、离线 OCR 和五种导出全部通过；600 DPI PNG 经独立回读为 4959 × 7017 像素。运行时实测为 Electron 45.2.3 / Node 24.22.2、Python 3.12.14。
+
+发布文件来自上述成功构建，公开下载使用 GitHub Releases，Actions 仅保留构建证据。下面的 0.2.0 / 0.2.1 记录属于历史版本。
+
 ## 自动验收
 
 `.github/workflows/windows.yml` 在 Windows runner 上安装锁定依赖，执行引擎、桌面逻辑、中英文 UI、打包和迁移目录后的便携包测试。只有全部成功才上传 ZIP；失败保留测试证据。可在 GitHub Actions 手动运行 `Windows x64 preview`，或由 PR / main 推送触发。
