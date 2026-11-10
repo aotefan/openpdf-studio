@@ -20,10 +20,12 @@ Version 0.2.0 adds Windows x64 launch paths, offline Chinese/English OCR, native
 |Image editing|Insert/replace/delete, drag/resize, rotate, opacity, central crop|Complex shared, nested or clipped placements can be rejected|
 |Pages|Rotate, insert, delete, reorder, merge, split, extract, watermark and page numbers|500-page document limit|
 |PDF to Word|DOCX text paragraphs|Not a lossless layout-preserving conversion|
-|Other exports|XLSX tables/text rows, PPTX page images, PNG ZIP, TXT|PPTX output is raster page images|
+|Other exports|XLSX tables/text rows, PPTX page images, 150/300/600 DPI lossless PNG ZIP, TXT|PPTX output is raster page images|
 |OCR|Windows offline models / macOS Apple Vision Chinese/English searchable text layers|No deskew or scan-image text replacement; mixed/rotated pages can be skipped|
 |Batch operations|Multiple-file conversions; current-document text replacement and page-range OCR|Multiple-file OCR is not implemented|
 |History|Undo/redo, save a copy, recover the last active document|Full rewrite rather than incremental saving|
+
+[High-resolution image export](docs/image-export.md): choose 600 DPI in Convert → Page images, with page-range selection. The default is 300 DPI.
 
 Input limit: 60 MB and 500 pages per PDF. Encrypted, modification-restricted and signed files are rejected. This is an early research application, not a complete equivalent of every WPS PDF feature.
 

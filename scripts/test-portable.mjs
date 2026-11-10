@@ -2,9 +2,11 @@ import {expect, _electron as electron} from '@playwright/test';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
+import {execFileSync} from 'node:child_process';
 import {createRequire} from 'node:module';
 const require = createRequire(import.meta.url);
 const {patched} = require('./check-runtime.cjs');
+const {pythonPath} = require('../desktop/platform.cjs');
 const root = process.cwd();
 const {version, devDependencies} = JSON.parse(await fs.readFile('package.json', 'utf8'));
 const source = process.argv[2] || path.join(root, 'release/artifacts.noindex', version, `OpenPDF Studio-${process.platform}-${process.arch}`);
@@ -73,12 +75,23 @@ try {
     } finally { await window.studio.rpc('close', {sid: d.id}); }
   }, await fs.readFile(fixture, 'base64'));
   for (const result of conversions) expect(result.size).toBeGreaterThan(10);
+  const highResolution = await page.evaluate(async data => {
+    const d = await window.studio.rpc('open', {data});
+    try { return await window.studio.rpc('export', {sid: d.id, format: 'png', pages: [0], dpi: 600}); }
+    finally { await window.studio.rpc('close', {sid: d.id}); }
+  }, await fs.readFile(fixture, 'base64'));
+  const imageZip = path.join(temp, '高清图片.zip');
+  await fs.writeFile(imageZip, Buffer.from(highResolution.data, 'base64'));
+  // Independent file readback verifies the frozen worker rendered real pixels and wrote DPI metadata.
+  const imageReadback = JSON.parse(execFileSync(pythonPath(root), ['-X', 'utf8', '-c',
+    'import sys,json,io,zipfile;from PIL import Image;z=zipfile.ZipFile(sys.argv[1]);im=Image.open(io.BytesIO(z.read("page-1.png")));print(json.dumps({"size":list(im.size),"dpi":[round(x) for x in im.info["dpi"]]}))', imageZip], {encoding: 'utf8'}));
+  expect(imageReadback).toEqual({size: [4959, 7017], dpi: [600, 600]});
   await expect(page.locator('vite-error-overlay')).toHaveCount(0);
   expect(errors).toEqual([]);
   const evidence = process.env.OPENPDF_EVIDENCE || path.join(os.tmpdir(), 'openpdf-evidence');
   await fs.mkdir(evidence, {recursive: true});
   await page.screenshot({path: path.join(evidence, `portable-${process.platform}.png`)});
-  console.log(JSON.stringify({runtime, unicodePath: true, saveReopen: reopened, offlineOcr: true, conversions, errors}, null, 2));
+  console.log(JSON.stringify({runtime, unicodePath: true, saveReopen: reopened, offlineOcr: true, conversions, highResolutionPng: imageReadback, errors}, null, 2));
 } finally {
   if (app) await app.close();
   await fs.rm(temp, {recursive: true, force: true, maxRetries: 5, retryDelay: 500});

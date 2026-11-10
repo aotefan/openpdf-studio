@@ -34,6 +34,7 @@ app.whenReady().then(()=>{
    return r.canceled?batch.status():batch.configure({destination:r.filePaths[0]});
   }
   if(action==='format')return batch.configure({format:value});
+  if(action==='dpi')return batch.configure({dpi:Number(value)});
   if(action==='begin')return batch.begin();
   if(action==='step')return batch.step();
   if(action==='finish')return batch.finish();

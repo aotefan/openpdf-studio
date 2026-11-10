@@ -1,3 +1,10 @@
+# 0.2.1 — High-resolution image export (2026-11-09)
+
+- Render PNG exports directly from PDF pages at 150, 300 (default), or 600 DPI, with matching PNG resolution metadata and lossless RGB output.
+- Add a bilingual image-export dialog with page ranges, estimated pixel dimensions, cancellation and retry; expose the same resolution choices in generic and multi-file conversion.
+- Preserve original page numbers in PNG names and include DPI in ZIP names; render one page at a time with page-pixel and archive-size limits.
+- Validate exported pixels, DPI, crop, rotation, annotations, document preservation and retry; independently read back a 600 DPI export from the packaged native worker.
+
 # 0.2.0 — Windows x64 portable preview (2026-11-09)
 
 - Add Windows native worker paths, UTF-8 RPC, hidden background consoles, Ctrl shortcuts and platform-correct menus/help.

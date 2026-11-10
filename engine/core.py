@@ -7,6 +7,9 @@ import pymupdf as fitz
 from PIL import Image, ImageChops, ImageDraw
 
 MAX_PAGES = 500
+IMAGE_EXPORT_DPI = (150, 300, 600)
+MAX_IMAGE_EXPORT_PIXELS = 40_000_000
+MAX_IMAGE_EXPORT_BYTES = 128 * 1024 * 1024
 
 class EngineError(Exception):
     def __init__(self, code, details=None):
@@ -180,6 +183,30 @@ def image_png(doc,xref):
         buf=io.BytesIO();im.convert('RGBA').save(buf,format='PNG');return buf.getvalue()
 
 def png(page,scale=1):return page.get_pixmap(matrix=fitz.Matrix(scale,scale),alpha=False).tobytes('png')
+
+def export_page_images(doc, dpi, source_pages):
+    if type(dpi) is not int or dpi not in IMAGE_EXPORT_DPI:
+        raise EngineError('invalidImageDpi')
+    # Check every selected page before allocating any high-resolution pixmap.
+    for page in doc:
+        bounds = (page.rect * fitz.Matrix(dpi / 72, dpi / 72)).irect
+        if bounds.width <= 0 or bounds.height <= 0 or bounds.width * bounds.height > MAX_IMAGE_EXPORT_PIXELS:
+            raise EngineError('imageExportPageTooLarge')
+    # PNG is already losslessly compressed. Stage the archive on disk, one page at a time.
+    with tempfile.TemporaryFile() as out:
+        with zipfile.ZipFile(out, 'w', zipfile.ZIP_STORED) as archive:
+            for index, page in zip(source_pages, doc):
+                pixmap = page.get_pixmap(dpi=dpi, colorspace=fitz.csRGB, alpha=False, annots=True)
+                data = pixmap.tobytes('png')
+                del pixmap
+                if out.tell() + len(data) > MAX_IMAGE_EXPORT_BYTES:
+                    raise EngineError('imageExportTooLarge')
+                archive.writestr(f'page-{index + 1}.png', data)
+                del data
+        if out.tell() > MAX_IMAGE_EXPORT_BYTES:
+            raise EngineError('imageExportTooLarge')
+        out.seek(0)
+        return out.read()
 
 def diff_report(before,after,regions,structural=False,alpha=False):
     with fitz.open(stream=before,filetype='pdf') as a,fitz.open(stream=after,filetype='pdf') as b:
@@ -590,23 +617,26 @@ class Engine:
         with fitz.open(stream=self.session(sid).data,filetype='pdf') as d:
             image_only=sum(not p.get_text().strip() and bool(p.get_images() or p.get_drawings()) for p in d)
             return {'pages':len(d),'imageOnlyPages':image_only}
-    def export(self,sid,format='pdf',pages=None):
+    def export(self,sid,format='pdf',pages=None,dpi=300):
         s=self.session(sid)
         d=fitz.open(stream=s.data,filetype='pdf')
         try:
+            source_pages=list(range(len(d)))
             if pages is not None:
-                if not pages or any(not isinstance(x,int) or x<0 or x>=len(d) for x in pages):raise EngineError('invalidPage')
+                if not isinstance(pages,list) or not pages or any(type(x) is not int or x<0 or x>=len(d) for x in pages):raise EngineError('invalidPage')
+                if format=='png' and len(set(pages))!=len(pages):raise EngineError('invalidPage')
+                source_pages=pages
                 d.select(pages)
             out=io.BytesIO();ext=format
             if format=='pdf':data=d.tobytes(garbage=4,deflate=True)
             elif format=='txt':data='\n\n'.join(p.get_text(sort=True) for p in d).encode()
-            elif format in ['png','split']:
+            elif format=='png':
+                ext='zip';data=export_page_images(d,dpi,source_pages)
+            elif format=='split':
                 ext='zip'
                 with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED) as z:
                     for i,p in enumerate(d):
-                        if format=='png':z.writestr(f'page-{i+1}.png',png(p,2))
-                        else:
-                            part=fitz.open();part.insert_pdf(d,from_page=i,to_page=i);z.writestr(f'page-{i+1}.pdf',part.tobytes());part.close()
+                        part=fitz.open();part.insert_pdf(d,from_page=i,to_page=i);z.writestr(f'page-{i+1}.pdf',part.tobytes());part.close()
                 data=out.getvalue()
             elif format=='docx':
                 from docx import Document
@@ -634,7 +664,8 @@ class Engine:
                 r.save(out);data=out.getvalue()
             elif format=='log':ext='json';data=json.dumps(s.log,ensure_ascii=False,indent=2).encode()
             else:raise EngineError('invalidOperation')
-            return {'data':b64(data),'name':Path(s.name).stem+'-edited.'+ext,'extension':ext}
+            name=Path(s.name).stem+(f'-{dpi}dpi.zip' if format=='png' else '-edited.'+ext)
+            return {'data':b64(data),'name':name,'extension':ext}
         finally:d.close()
     def import_file(self,data,name):
         raw=un64(data);ext=Path(name).suffix.lower()

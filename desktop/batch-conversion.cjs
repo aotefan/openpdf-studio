@@ -4,11 +4,12 @@ const {randomUUID}=require('node:crypto');
 const formats=new Set(['docx','xlsx','pptx','png','txt']);
 class BatchConversion {
  constructor(call){this.call=call;this.reset()}
- reset(){if(this.busy||this.stage)throw new Error('batchBusy');this.files=[];this.destination='';this.format='docx';this.phase='ready';this.completed=0;this.error='';this.failedFile='';this.result='';this.cancelled=false;return this.status()}
- status(){return {files:this.files.map(({name,size},i)=>({name,size,output:`${String(i+1).padStart(3,'0')}-${name.replace(/\.pdf$/i,'')}.${this.format==='png'?'zip':this.format}`,status:i<this.completed?'converted':i===this.completed&&this.phase==='running'?'converting':'pending'})),destination:this.destination,format:this.format,phase:this.phase,completed:this.completed,error:this.error,failedFile:this.failedFile,result:this.result}}
- async configure({files,destination,format}={}){
+ reset(){if(this.busy||this.stage)throw new Error('batchBusy');this.files=[];this.destination='';this.format='docx';this.dpi=300;this.phase='ready';this.completed=0;this.error='';this.failedFile='';this.result='';this.cancelled=false;return this.status()}
+ status(){return {files:this.files.map(({name,size},i)=>({name,size,output:`${String(i+1).padStart(3,'0')}-${name.replace(/\.pdf$/i,'')}${this.format==='png'?'-'+this.dpi+'dpi':''}.${this.format==='png'?'zip':this.format}`,status:i<this.completed?'converted':i===this.completed&&this.phase==='running'?'converting':'pending'})),destination:this.destination,format:this.format,dpi:this.dpi,phase:this.phase,completed:this.completed,error:this.error,failedFile:this.failedFile,result:this.result}}
+ async configure({files,destination,format,dpi}={}){
   if(this.busy||this.stage)throw new Error('batchBusy');
   if(format!==undefined&&!formats.has(format))throw new Error('invalidOperation');
+  if(dpi!==undefined&&(!Number.isInteger(dpi)||![150,300,600].includes(dpi)))throw new Error('invalidImageDpi');
   let items=this.files;
   if(files!==undefined){
    if(!Array.isArray(files)||!files.length||files.length>30)throw new Error('batchFileLimit');
@@ -23,7 +24,7 @@ class BatchConversion {
    }
   }
   if(destination!==undefined){destination=await fs.realpath(destination);if(!(await fs.stat(destination)).isDirectory())throw new Error('invalidOperation')}
-  this.files=items;if(destination!==undefined)this.destination=destination;if(format!==undefined)this.format=format;
+  this.files=items;if(destination!==undefined)this.destination=destination;if(format!==undefined)this.format=format;if(dpi!==undefined)this.dpi=dpi;
   this.phase='ready';this.completed=0;this.error='';this.failedFile='';this.result='';return this.status();
  }
  async begin(){
@@ -49,7 +50,7 @@ class BatchConversion {
     const info=await this.call('conversion_info',{sid});if(info.imageOnlyPages>0)throw new Error('batchNeedsOcr');
    }
    if(this.cancelled){await this.discard('cancelled');return this.status()}
-   const result=await this.call('export',{sid,format:this.format});
+   const result=await this.call('export',{sid,format:this.format,...(this.format==='png'?{dpi:this.dpi}:{})});
    if(this.cancelled){await this.discard('cancelled');return this.status()}
    if(typeof result.data!=='string'||result.data.length>250*1024*1024)throw new Error('fileTooLarge');
    await fs.writeFile(path.join(this.stage,this.status().files[this.completed].output),Buffer.from(result.data,'base64'),{flag:'wx'});
